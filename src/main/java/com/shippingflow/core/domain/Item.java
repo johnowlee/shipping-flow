@@ -8,12 +8,21 @@ public class Item {
     private Long id;
     private String name;
     private Long quantity;
+    private String description;
 
     @Builder
-    private Item(Long id, String name, Long quantity) {
+    private Item(Long id, String name, Long quantity, String description) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
+        this.description = description;
+    }
+
+    public static Item createNewItem(String name, String description) {
+        return builder()
+                .name(name)
+                .description(description)
+                .build();
     }
 
     @Override
