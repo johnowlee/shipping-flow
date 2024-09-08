@@ -3,6 +3,8 @@ package com.shippingflow.core.usecase.item;
 import com.shippingflow.core.domain.item.Item;
 import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
 import com.shippingflow.core.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.exception.DomainException;
+import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.UseCase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     @Override
     public Output execute(Input input) {
         if (itemReaderRepository.existsByName(input.getName())) {
-            throw new IllegalStateException("이미 존재하는 상품명 입니다.");
+            throw new DomainException(ItemError.ITEM_NAME_ALREADY_EXISTS);
         }
 
         Item newItem = Item.createNewItem(input.getName(), input.getPrice(), input.getDescription());

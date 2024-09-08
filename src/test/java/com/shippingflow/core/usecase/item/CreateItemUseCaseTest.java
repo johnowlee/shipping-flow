@@ -3,7 +3,8 @@ package com.shippingflow.core.usecase.item;
 import com.shippingflow.core.domain.item.Item;
 import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
 import com.shippingflow.core.domain.item.repository.ItemWriterRepository;
-import com.shippingflow.core.usecase.item.CreateItemUseCase;
+import com.shippingflow.core.exception.DomainException;
+import com.shippingflow.core.exception.error.ItemError;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,7 @@ class CreateItemUseCaseTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> createItemUseCase.execute(input))
-                        .isInstanceOf(IllegalStateException.class)
-                        .hasMessage("이미 존재하는 상품명 입니다.");
+                        .isInstanceOf(DomainException.class)
+                        .hasMessage(ItemError.ITEM_NAME_ALREADY_EXISTS.getMessage());
     }
 }
