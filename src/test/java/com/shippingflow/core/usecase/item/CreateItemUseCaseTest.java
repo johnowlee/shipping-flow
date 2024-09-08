@@ -1,11 +1,12 @@
 package com.shippingflow.core.usecase.item;
 
 import com.shippingflow.core.domain.item.Item;
-import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.domain.item.component.ItemValidator;
 import com.shippingflow.core.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.domain.stock.Stock;
+import com.shippingflow.core.domain.stock.repository.StockWriterRepository;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class CreateItemUseCaseTest {
@@ -22,7 +27,10 @@ class CreateItemUseCaseTest {
     ItemWriterRepository itemWriterRepository;
 
     @Mock
-    ItemReaderRepository itemReaderRepository;
+    ItemValidator itemValidator;
+
+    @Mock
+    StockWriterRepository stockWriterRepository;
 
     @InjectMocks
     CreateItemUseCase createItemUseCase;
@@ -43,7 +51,7 @@ class CreateItemUseCaseTest {
                 .price(price)
                 .build();
 
-        given(itemReaderRepository.existsByName(input.getName())).willReturn(false);
+        willDoNothing().given(itemValidator).validateItemNameDuplication(name);
         given(itemWriterRepository.save(newItem)).willReturn(savedItem);
 
         // when
@@ -51,10 +59,11 @@ class CreateItemUseCaseTest {
         
         // then
         Item actual = output.getItem();
-        Assertions.assertThat(actual.getId()).isEqualTo(1L);
-        Assertions.assertThat(actual.getName()).isEqualTo(name);
-        Assertions.assertThat(actual.getDescription()).isEqualTo(description);
-        Assertions.assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getId()).isEqualTo(1L);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getDescription()).isEqualTo(description);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        then(stockWriterRepository).should(times(1)).save(any(Stock.class));
     }
 
     @DisplayName("신규 상품을 등록할때 중복된 상품 이름이 있으면 예외가 발생한다.")
@@ -66,10 +75,12 @@ class CreateItemUseCaseTest {
         String description = "상품A 입니다.";
         CreateItemUseCase.Input input = new CreateItemUseCase.Input(name, price, description);
 
-        given(itemReaderRepository.existsByName(input.getName())).willReturn(true);
+        willThrow(new DomainException(ItemError.ITEM_NAME_ALREADY_EXISTS))
+                .given(itemValidator)
+                .validateItemNameDuplication(name);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> createItemUseCase.execute(input))
+        assertThatThrownBy(() -> createItemUseCase.execute(input))
                         .isInstanceOf(DomainException.class)
                         .hasMessage(ItemError.ITEM_NAME_ALREADY_EXISTS.getMessage());
     }

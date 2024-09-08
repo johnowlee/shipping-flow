@@ -1,10 +1,10 @@
 package com.shippingflow.core.usecase.item;
 
 import com.shippingflow.core.domain.item.Item;
-import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.domain.item.component.ItemValidator;
 import com.shippingflow.core.domain.item.repository.ItemWriterRepository;
-import com.shippingflow.core.exception.DomainException;
-import com.shippingflow.core.exception.error.ItemError;
+import com.shippingflow.core.domain.stock.Stock;
+import com.shippingflow.core.domain.stock.repository.StockWriterRepository;
 import com.shippingflow.core.usecase.UseCase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,31 +13,37 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateItemUseCase.Output> {
+    private final ItemValidator itemValidator;
     private final ItemWriterRepository itemWriterRepository;
-    private final ItemReaderRepository itemReaderRepository;
+    private final StockWriterRepository stockWriterRepository;
     @Override
     public Output execute(Input input) {
-        if (itemReaderRepository.existsByName(input.getName())) {
-            throw new DomainException(ItemError.ITEM_NAME_ALREADY_EXISTS);
-        }
 
-        Item newItem = Item.createNewItem(input.getName(), input.getPrice(), input.getDescription());
-        Item persistedItem = itemWriterRepository.save(newItem);
-        return new Output(persistedItem);
+        itemValidator.validateItemNameDuplication(input.name);
+
+        Item item = itemWriterRepository.save(createNewItemFrom(input));
+
+        stockWriterRepository.save(Stock.createNewStock(item));
+
+        return new Output(item);
     }
 
     @Getter
     @RequiredArgsConstructor
     public static class Input implements UseCase.Input {
+
         private final String name;
         private final Long price;
         private final String description;
     }
-
     @Getter
     @RequiredArgsConstructor
     public static class Output implements UseCase.Output {
-        private final Item item;
-    }
 
+        private final Item item;
+
+    }
+    private static Item createNewItemFrom(Input input) {
+        return Item.createNewItem(input.getName(), input.getPrice(), input.getDescription());
+    }
 }
