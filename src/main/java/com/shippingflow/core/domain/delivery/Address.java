@@ -1,4 +1,4 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.delivery;
 
 public class Address {
 

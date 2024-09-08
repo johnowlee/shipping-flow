@@ -1,4 +1,4 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.item;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,20 +9,21 @@ import java.util.Objects;
 public class Item {
     private Long id;
     private String name;
-    private Long quantity;
+    private Long price;
     private String description;
 
     @Builder
-    private Item(Long id, String name, Long quantity, String description) {
+    private Item(Long id, String name, Long price, String description) {
         this.id = id;
         this.name = name;
-        this.quantity = quantity;
+        this.price = price;
         this.description = description;
     }
 
-    public static Item createNewItem(String name, String description) {
+    public static Item createNewItem(String name, Long price, String description) {
         return builder()
                 .name(name)
+                .price(price)
                 .description(description)
                 .build();
     }

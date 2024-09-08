@@ -1,5 +1,7 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.orderitem;
 
+import com.shippingflow.core.domain.item.Item;
+import com.shippingflow.core.domain.orderitem.OrderItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,23 +49,6 @@ class OrderItemTest {
         assertThatThrownBy(() -> OrderItem.createOrderItem(item, orderQuantity))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품 주문 갯수는 1개 이상이어야 합니다.");
-    }
-
-    @DisplayName("상품 객체와 주문 갯수가 같다면 두 인스턴스는 동등하다.")
-    @Test
-    void equals() {
-        // given
-        Item item = createTestItem();
-        int orderQuantity = 10;
-
-        // when
-        OrderItem orderItemA = OrderItem.createOrderItem(item, orderQuantity);
-        OrderItem orderItemB = OrderItem.createOrderItem(item, orderQuantity);
-
-        // then
-        assertThat(orderItemA.getItem()).isEqualTo(orderItemB.getItem());
-        assertThat(orderItemA.getOrderQuantity()).isEqualTo(orderItemB.getOrderQuantity());
-        assertThat(orderItemA).isEqualTo(orderItemB);
     }
 
     private static Item createTestItem() {

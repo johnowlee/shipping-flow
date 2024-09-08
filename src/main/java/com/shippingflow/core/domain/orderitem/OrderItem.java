@@ -1,5 +1,7 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.orderitem;
 
+import com.shippingflow.core.domain.item.Item;
+import com.shippingflow.core.domain.order.Order;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,14 +9,17 @@ import java.util.Objects;
 
 @Getter
 public class OrderItem {
-    private Item item;
+    private Long id;
     private int orderQuantity;
+    private Order order;
+    private Item item;
 
     @Builder
-    private OrderItem(Item item, int orderQuantity) {
+    private OrderItem(Long id, Item item, Order order, int orderQuantity) {
         validateArgs(item, orderQuantity);
-
+        this.id = id;
         this.item = item;
+        this.order = order;
         this.orderQuantity = orderQuantity;
     }
 
@@ -40,11 +45,11 @@ public class OrderItem {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         OrderItem orderItem = (OrderItem) object;
-        return orderQuantity == orderItem.orderQuantity && Objects.equals(item, orderItem.item);
+        return Objects.equals(id, orderItem.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(item, orderQuantity);
+        return Objects.hash(id);
     }
 }

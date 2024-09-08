@@ -1,5 +1,8 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.order;
 
+import com.shippingflow.core.domain.customer.Customer;
+import com.shippingflow.core.domain.item.Item;
+import com.shippingflow.core.domain.orderitem.OrderItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +22,7 @@ public class OrderTest {
         Item item = Item.builder()
                 .id(1L)
                 .name("itemA")
-                .quantity(30L)
+                .price(10_000L)
                 .build();
 
         OrderItem orderItem = OrderItem.builder()

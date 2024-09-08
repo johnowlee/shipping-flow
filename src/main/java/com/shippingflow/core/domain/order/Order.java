@@ -1,5 +1,7 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.order;
 
+import com.shippingflow.core.domain.customer.Customer;
+import com.shippingflow.core.domain.orderitem.OrderItem;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,9 +12,9 @@ import java.util.Set;
 public class Order {
     private Long id;
     private Customer customer;
-    private Set<OrderItem> orderItems;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Set<OrderItem> orderItems;
 
     @Builder
     private Order(Long id, Customer customer, Set<OrderItem> orderItems, LocalDateTime createdAt, LocalDateTime updatedAt) {

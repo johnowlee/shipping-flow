@@ -1,8 +1,9 @@
-package com.shippingflow.core.usecase;
+package com.shippingflow.core.usecase.item;
 
-import com.shippingflow.core.domain.Item;
-import com.shippingflow.core.domain.ItemReaderRepository;
-import com.shippingflow.core.domain.ItemWriterRepository;
+import com.shippingflow.core.domain.item.Item;
+import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.usecase.UseCase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
             throw new IllegalStateException("이미 존재하는 상품명 입니다.");
         }
 
-        Item newItem = Item.createNewItem(input.getName(), input.getDescription());
+        Item newItem = Item.createNewItem(input.getName(), input.getPrice(), input.getDescription());
         Item persistedItem = itemWriterRepository.save(newItem);
         return new Output(persistedItem);
     }
@@ -27,6 +28,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     @RequiredArgsConstructor
     public static class Input implements UseCase.Input {
         private final String name;
+        private final Long price;
         private final String description;
     }
 

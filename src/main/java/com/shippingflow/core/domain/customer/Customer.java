@@ -1,19 +1,23 @@
-package com.shippingflow.core.domain;
+package com.shippingflow.core.domain.customer;
 
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Customer {
     private Long id;
     private String name;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
-    private Customer(Long id, String name) {
+    private Customer(Long id, String name, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
-
 
     @Override
     public boolean equals(Object object) {

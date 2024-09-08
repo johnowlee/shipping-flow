@@ -1,8 +1,9 @@
-package com.shippingflow.core.usecase;
+package com.shippingflow.core.usecase.item;
 
-import com.shippingflow.core.domain.Item;
-import com.shippingflow.core.domain.ItemReaderRepository;
-import com.shippingflow.core.domain.ItemWriterRepository;
+import com.shippingflow.core.domain.item.Item;
+import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.usecase.item.CreateItemUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,14 +31,15 @@ class CreateItemUseCaseTest {
     void execute() {
         // given
         String name = "상품A";
+        Long price = 10_000L;
         String description = "상품A 입니다.";
-        CreateItemUseCase.Input input = new CreateItemUseCase.Input(name, description);
-        Item newItem = Item.createNewItem(input.getName(), input.getDescription());
+        CreateItemUseCase.Input input = new CreateItemUseCase.Input(name, price, description);
+        Item newItem = Item.createNewItem(input.getName(), input.getPrice(), input.getDescription());
         Item savedItem = Item.builder()
                 .id(1L)
                 .name(input.getName())
                 .description(input.getDescription())
-                .quantity(0L)
+                .price(price)
                 .build();
 
         given(itemReaderRepository.existsByName(input.getName())).willReturn(false);
@@ -51,7 +53,7 @@ class CreateItemUseCaseTest {
         Assertions.assertThat(actual.getId()).isEqualTo(1L);
         Assertions.assertThat(actual.getName()).isEqualTo(name);
         Assertions.assertThat(actual.getDescription()).isEqualTo(description);
-        Assertions.assertThat(actual.getQuantity()).isEqualTo(0L);
+        Assertions.assertThat(actual.getPrice()).isEqualTo(price);
     }
 
     @DisplayName("신규 상품을 등록할때 중복된 상품 이름이 있으면 예외가 발생한다.")
@@ -59,8 +61,9 @@ class CreateItemUseCaseTest {
     void execute_shouldThrowExceptionWhenDuplicateItemNameExists() {
         // given
         String name = "상품A";
+        Long price = 10_000L;
         String description = "상품A 입니다.";
-        CreateItemUseCase.Input input = new CreateItemUseCase.Input(name, description);
+        CreateItemUseCase.Input input = new CreateItemUseCase.Input(name, price, description);
 
         given(itemReaderRepository.existsByName(input.getName())).willReturn(true);
 
