@@ -1,9 +1,11 @@
 package com.shippingflow.core.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 public class Item {
     private Long id;
     private String name;
