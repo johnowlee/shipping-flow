@@ -1,5 +1,6 @@
 package com.shippingflow.core.domain.item;
 
+import com.shippingflow.core.domain.stock.Stock;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ public class Item {
     private String name;
     private Long price;
     private String description;
+    private Stock stock;
 
     @Builder
     private Item(Long id, String name, Long price, String description) {
@@ -18,6 +20,11 @@ public class Item {
         this.name = name;
         this.price = price;
         this.description = description;
+    }
+
+    public void assignStock(Stock stock) {
+        this.stock = stock;
+        stock.assignedTo(this);
     }
 
     public static Item createNewItem(String name, Long price, String description) {

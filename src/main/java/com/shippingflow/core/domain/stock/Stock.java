@@ -13,17 +13,24 @@ public class Stock {
     private long quantity;
 
     @Builder
-    private Stock(Long id, Item item, long quantity) {
+    private Stock(Long id, long quantity) {
         this.id = id;
-        this.item = item;
         this.quantity = quantity;
     }
 
+    public void assignedTo(Item item) {
+        this.item = item;
+    }
+
     public static Stock createNewStock(Item item) {
-        return Stock.builder().item(item).build();
+        Stock stock = Stock.builder().build();
+        stock.assignedTo(item);
+        return stock;
     }
 
     public static Stock createStock(Long id, Item item, long quantity) {
-        return Stock.builder().id(id).item(item).quantity(quantity).build();
+        Stock stock = Stock.builder().id(id).quantity(quantity).build();
+        stock.assignedTo(item);
+        return stock;
     }
 }
