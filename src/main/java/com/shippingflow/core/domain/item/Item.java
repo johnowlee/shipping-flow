@@ -21,11 +21,11 @@ public class Item {
     }
 
     public static Item createNewItem(String name, Long price, String description) {
-        return builder()
-                .name(name)
-                .price(price)
-                .description(description)
-                .build();
+        return of(null, name, price, description);
+    }
+
+    public static Item createItem(Long id, String name, Long price, String description) {
+        return of(id, name, price, description);
     }
 
     @Override
@@ -39,5 +39,14 @@ public class Item {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    private static Item of(Long id, String name, Long price, String description) {
+        return builder()
+                .id(id)
+                .name(name)
+                .price(price)
+                .description(description)
+                .build();
     }
 }
