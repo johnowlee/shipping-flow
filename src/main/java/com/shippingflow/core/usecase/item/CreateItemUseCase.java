@@ -20,13 +20,11 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     private final StockWriterRepository stockWriterRepository;
     @Override
     public Output execute(Input input) {
-
         itemValidator.validateItemNameDuplication(input.name);
 
         Item item = itemWriterRepository.save(createNewItemFrom(input));
-
-        stockWriterRepository.save(Stock.createNewStock(item));
-
+        Stock stock = stockWriterRepository.save(Stock.createNewStock(item));
+        item.assignStock(stock);
         return new Output(item);
     }
 
