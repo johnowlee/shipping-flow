@@ -14,7 +14,7 @@ public class ItemValidator {
 
     public void validateItemNameDuplication(String name) {
         if (itemReaderRepository.existsByName(name)) {
-            throw new DomainException(ItemError.ITEM_NAME_ALREADY_EXISTS);
+            throw DomainException.from(ItemError.ITEM_NAME_ALREADY_EXISTS);
         }
     }
 }
