@@ -8,8 +8,12 @@ public class DomainException extends RuntimeException {
 
     private final ErrorSpec errorSpec;
 
-    public DomainException(ErrorSpec errorSpec) {
+    private DomainException(ErrorSpec errorSpec) {
         super(errorSpec.getMessage());
         this.errorSpec = errorSpec;
+    }
+
+    public static DomainException from(ErrorSpec errorSpec) {
+        return new DomainException(errorSpec);
     }
 }

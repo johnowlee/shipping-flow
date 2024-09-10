@@ -23,6 +23,7 @@ public class Item {
     }
 
     public void assignStock(Stock stock) {
+        if (this.stock != null) return;
         this.stock = stock;
         stock.assignedTo(this);
     }
