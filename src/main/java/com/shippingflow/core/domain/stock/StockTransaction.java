@@ -24,13 +24,11 @@ public class StockTransaction {
     }
 
     public static StockTransaction createNewStockTransaction(Stock stock, long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
-        return builder()
-                .id(null)
-                .stock(stock)
-                .quantity(quantity)
-                .transactionType(transactionType)
-                .transactionDateTime(transactionDateTime)
-                .build();
+        return of(null, stock, quantity, transactionType, transactionDateTime);
+    }
+
+    public static StockTransaction createStockTransaction(Long id, Stock stock, long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        return of(id, stock, quantity, transactionType, transactionDateTime);
     }
 
     public void assignedTo(Stock stock) {
@@ -48,5 +46,15 @@ public class StockTransaction {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    private static StockTransaction of(Long id, Stock stock, long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        return builder()
+                .id(id)
+                .stock(stock)
+                .quantity(quantity)
+                .transactionType(transactionType)
+                .transactionDateTime(transactionDateTime)
+                .build();
     }
 }

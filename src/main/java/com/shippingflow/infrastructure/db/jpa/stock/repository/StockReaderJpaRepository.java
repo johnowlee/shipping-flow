@@ -1,20 +1,22 @@
 package com.shippingflow.infrastructure.db.jpa.stock.repository;
 
 import com.shippingflow.core.domain.stock.Stock;
-import com.shippingflow.core.domain.stock.repository.StockWriterRepository;
+import com.shippingflow.core.domain.stock.repository.StockReaderRepository;
 import com.shippingflow.infrastructure.db.jpa.stock.StockEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Repository
-public class StockWriterJpaRepository implements StockWriterRepository {
+public class StockReaderJpaRepository implements StockReaderRepository {
 
     private final StockJpaRepository stockJpaRepository;
 
     @Override
-    public Stock save(Stock stock) {
-        StockEntity stockEntity = stock.getId() == null ? StockEntity.createNewFrom(stock) : StockEntity.from(stock);
-        return stockJpaRepository.save(stockEntity).toDomain();
+    public Optional<Stock> findById(long id) {
+        return stockJpaRepository.findById(id)
+                .map(StockEntity::toDomain);
     }
 }

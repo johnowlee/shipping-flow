@@ -21,10 +21,15 @@ public class StockEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private ItemEntity item;
+
     private long quantity;
 
     public static StockEntity createNewFrom(Stock stock) {
         return new StockEntity(null, ItemEntity.from(stock.getItem()), stock.getQuantity());
+    }
+
+    public static StockEntity from(Stock stock) {
+        return new StockEntity(stock.getId(), ItemEntity.from(stock.getItem()), stock.getQuantity());
     }
 
     public Stock toDomain() {
