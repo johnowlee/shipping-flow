@@ -50,4 +50,33 @@ class StockWriterJpaRepositoryTest {
         assertThat(actual.getItem().getPrice()).isEqualTo(price);
         assertThat(actual.getItem().getDescription()).isEqualTo(description);
     }
+
+    @DisplayName("재고의 수량을 변경한다.")
+    @Test
+    void update() {
+        // given
+        String name = "ItemA";
+        long price = 1000L;
+        String description = "This is ItemA";
+        Item item = Item.createNewItem(name, price, description);
+        ItemEntity savedItemEntity = itemJpaRepository.save(ItemEntity.createNewFrom(item));
+        Item savedItem = savedItemEntity.toDomain();
+
+        Stock stock = Stock.createNewStock(savedItem);
+        Stock increasedStock1 = stockWriterJpaRepository.save(stock);
+        increasedStock1.increase(100L);
+
+        Stock increasedStock2 = stockWriterJpaRepository.save(increasedStock1);
+        increasedStock2.increase(200L);
+
+        // when
+        Stock actual = stockWriterJpaRepository.save(increasedStock2);
+
+        // then
+        assertThat(actual.getId()).isNotNull();
+        assertThat(actual.getQuantity()).isEqualTo(100L + 200L);
+        assertThat(actual.getItem()).isEqualTo(savedItem);
+        assertThat(actual.getItem().getPrice()).isEqualTo(price);
+        assertThat(actual.getItem().getDescription()).isEqualTo(description);
+    }
 }

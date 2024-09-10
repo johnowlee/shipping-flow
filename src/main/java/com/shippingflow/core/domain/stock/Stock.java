@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 public class Stock {
@@ -54,5 +55,18 @@ public class Stock {
             throw DomainException.from(StockError.STOCK_SHORTAGE);
         }
         this.quantity -= quantity;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Stock stock = (Stock) object;
+        return Objects.equals(id, stock.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
