@@ -63,14 +63,14 @@ class StockWriterJpaRepositoryTest {
         Item savedItem = savedItemEntity.toDomain();
 
         Stock stock = Stock.createNewStock(savedItem);
-        Stock increasedStock1 = stockWriterJpaRepository.save(stock);
-        increasedStock1.increase(100L);
+        Stock savedStock = stockWriterJpaRepository.save(stock);
+        savedStock.increase(100L);
 
-        Stock increasedStock2 = stockWriterJpaRepository.save(increasedStock1);
-        increasedStock2.increase(200L);
+        Stock increasedStock = stockWriterJpaRepository.update(savedStock);
+        increasedStock.increase(200L);
 
         // when
-        Stock actual = stockWriterJpaRepository.save(increasedStock2);
+        Stock actual = stockWriterJpaRepository.update(increasedStock);
 
         // then
         assertThat(actual.getId()).isNotNull();
