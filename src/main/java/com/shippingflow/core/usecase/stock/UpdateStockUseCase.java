@@ -32,7 +32,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     private Output updateStockAndReturn(Input input) {
         return stockReaderRepository.findById(input.getId())
                 .map(stock -> updateQuantity(stock, input.getQuantity()))
-                .map(this::saveAndReturn)
+                .map(this::persist)
                 .orElseThrow(() -> DomainException.from(StockError.NOT_FOUND_STOCK));
     }
 
@@ -51,8 +51,8 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
         Stock stock;
     }
 
-    private Output saveAndReturn(Stock stock) {
-        return Output.of(stockWriterRepository.save(stock));
+    private Output persist(Stock stock) {
+        return Output.of(stockWriterRepository.update(stock));
     }
 
 }

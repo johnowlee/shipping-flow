@@ -14,7 +14,13 @@ public class StockWriterJpaRepository implements StockWriterRepository {
 
     @Override
     public Stock save(Stock stock) {
-        StockEntity stockEntity = stock.getId() == null ? StockEntity.createNewFrom(stock) : StockEntity.from(stock);
+        StockEntity stockEntity = StockEntity.createNewFrom(stock);
+        return stockJpaRepository.save(stockEntity).toDomain();
+    }
+
+    @Override
+    public Stock update(Stock stock) {
+        StockEntity stockEntity = StockEntity.from(stock);
         return stockJpaRepository.save(stockEntity).toDomain();
     }
 }

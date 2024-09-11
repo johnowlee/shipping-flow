@@ -4,4 +4,5 @@ import com.shippingflow.core.domain.stock.Stock;
 
 public interface StockWriterRepository {
     Stock save(Stock stock);
+    Stock update(Stock stock);
 }

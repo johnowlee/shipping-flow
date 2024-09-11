@@ -62,7 +62,7 @@ class DecreaseStockUseCaseTest {
                 .build();
 
         given(stockReaderRepository.findById(id)).willReturn(Optional.of(stock));
-        given(stockWriterRepository.save(stock)).willReturn(stock);
+        given(stockWriterRepository.update(stock)).willReturn(stock);
         given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
         given(stockTransactionWriterRepository.save(any(StockTransaction.class))).willReturn(stockTransaction);
 
