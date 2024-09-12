@@ -1,15 +1,15 @@
 package com.shippingflow.infrastructure.db.jpa.stock;
 
-import com.shippingflow.core.domain.stock.StockTransaction;
-import com.shippingflow.core.domain.stock.StockTransactionType;
+import com.shippingflow.core.aggregate.item.local.StockTransaction;
+import com.shippingflow.core.aggregate.item.local.StockTransactionType;
+import com.shippingflow.core.usecase.aggregate.item.vo.StockTransactionVo;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "stock_transaction")
 @Entity(name = "StockTransaction")
@@ -31,23 +31,34 @@ public class StockTransactionEntity {
 
     private LocalDateTime transactionDateTime;
 
-    public static StockTransactionEntity createNewFrom(StockTransaction transaction) {
-        return new StockTransactionEntity(
-                null,
-                StockEntity.from(transaction.getStock()),
-                transaction.getQuantity(),
-                transaction.getTransactionType(),
-                transaction.getTransactionDateTime()
-        );
+    @Builder
+    private StockTransactionEntity(Long id, long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        this.id = id;
+        this.quantity = quantity;
+        this.transactionType = transactionType;
+        this.transactionDateTime = transactionDateTime;
+    }
+
+    public static StockTransactionEntity create(StockTransactionVo transactionVo) {
+        return of(null, transactionVo.quantity(), transactionVo.transactionType(), transactionVo.transactionDateTime());
     }
 
     public StockTransaction toDomain() {
-        return StockTransaction.createStockTransaction(
+        return StockTransaction.of(
                 this.id,
                 this.stock.toDomain(),
                 this.quantity,
                 this.transactionType,
                 this.transactionDateTime
         );
+    }
+
+    private static StockTransactionEntity of(Long id, long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        return builder()
+                .id(id)
+                .quantity(quantity)
+                .transactionType(transactionType)
+                .transactionDateTime(transactionDateTime)
+                .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.shippingflow.presenter.api.item.controller;
 
-import com.shippingflow.core.usecase.item.CreateItemUseCase;
+import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
 import com.shippingflow.presenter.api.RestApiResponse;
 import com.shippingflow.presenter.api.item.controller.request.ItemRequest;
 import com.shippingflow.presenter.api.item.controller.response.ItemResponse;

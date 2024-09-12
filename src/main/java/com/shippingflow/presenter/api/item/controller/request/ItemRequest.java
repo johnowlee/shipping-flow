@@ -1,6 +1,6 @@
 package com.shippingflow.presenter.api.item.controller.request;
 
-import com.shippingflow.core.usecase.item.CreateItemUseCase;
+import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
 import jakarta.validation.constraints.NotBlank;
 
 public record ItemRequest(
@@ -12,6 +12,6 @@ public record ItemRequest(
 ) {
 
     public CreateItemUseCase.Input toInput() {
-        return new CreateItemUseCase.Input(name, price, description);
+        return CreateItemUseCase.Input.of(name, price, description);
     }
 }
