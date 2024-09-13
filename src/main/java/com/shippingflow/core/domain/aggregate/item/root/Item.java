@@ -36,7 +36,10 @@ public class Item {
     }
 
     public static Item create(String name, Long price, String description) {
-        return of(null, name, price, description);
+        Item item = of(null, name, price, description);
+        Stock stock = Stock.create();
+        item.bind(stock);
+        return item;
     }
 
     public void bind(Stock stock) {

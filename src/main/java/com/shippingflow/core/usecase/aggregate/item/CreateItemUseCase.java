@@ -21,7 +21,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     @Override
     public Output execute(Input input) {
         itemValidator.validateItemNameDuplication(input.name);
-        Item item = itemWriterRepository.save(createNewItemFrom(input).toVo());
+        Item item = itemWriterRepository.save(createItemFrom(input).toVo());
         return Output.of(item.toVo());
     }
 
@@ -37,7 +37,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
         ItemVo item;
     }
 
-    private static Item createNewItemFrom(Input input) {
+    private static Item createItemFrom(Input input) {
         return Item.create(input.getName(), input.getPrice(), input.getDescription());
     }
 }
