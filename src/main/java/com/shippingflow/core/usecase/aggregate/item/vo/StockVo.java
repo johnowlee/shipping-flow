@@ -1,6 +1,6 @@
 package com.shippingflow.core.usecase.aggregate.item.vo;
 
-import com.shippingflow.core.aggregate.item.root.Item;
+import com.shippingflow.core.domain.aggregate.item.root.Item;
 
 import java.util.List;
 

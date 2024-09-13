@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item.repository;
 
-import com.shippingflow.core.aggregate.item.repository.ItemReaderRepository;
-import com.shippingflow.core.aggregate.item.root.Item;
+import com.shippingflow.core.domain.aggregate.item.repository.ItemReaderRepository;
+import com.shippingflow.core.domain.aggregate.item.root.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

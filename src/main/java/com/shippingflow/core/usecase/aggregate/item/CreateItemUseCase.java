@@ -1,8 +1,8 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.aggregate.item.component.ItemValidator;
-import com.shippingflow.core.aggregate.item.repository.ItemWriterRepository;
-import com.shippingflow.core.aggregate.item.root.Item;
+import com.shippingflow.core.domain.aggregate.item.component.ItemValidator;
+import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
+import com.shippingflow.core.domain.aggregate.item.root.Item;
 import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
 import lombok.RequiredArgsConstructor;

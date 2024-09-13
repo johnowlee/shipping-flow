@@ -1,6 +1,6 @@
 package com.shippingflow.core.usecase.aggregate.item.vo;
 
-import com.shippingflow.core.aggregate.item.local.StockTransactionType;
+import com.shippingflow.core.domain.aggregate.item.local.StockTransactionType;
 
 import java.time.LocalDateTime;
 

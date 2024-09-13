@@ -1,6 +1,6 @@
 package com.shippingflow.infrastructure.db.jpa.stock;
 
-import com.shippingflow.core.aggregate.item.local.Stock;
+import com.shippingflow.core.domain.aggregate.item.local.Stock;
 import com.shippingflow.core.usecase.aggregate.item.vo.StockVo;
 import com.shippingflow.infrastructure.db.jpa.item.ItemEntity;
 import jakarta.persistence.*;
@@ -30,8 +30,8 @@ public class StockEntity {
         this.quantity = quantity;
     }
 
-    public static StockEntity create(StockVo stock) {
-        return of(null, stock.quantity());
+    public static StockEntity create() {
+        return of(null, null);
     }
 
     public static StockEntity from(StockVo stockVo) {
@@ -42,8 +42,7 @@ public class StockEntity {
         return Stock.of(this.id, this.quantity);
     }
 
-    public void assignedTo(ItemEntity item) {
-        if (this.item != null) return;
+    public void bindTo(ItemEntity item) {
         this.item = item;
     }
 

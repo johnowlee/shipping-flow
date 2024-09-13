@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.stock;
 
-import com.shippingflow.core.aggregate.item.local.StockTransaction;
-import com.shippingflow.core.aggregate.item.local.StockTransactionType;
+import com.shippingflow.core.domain.aggregate.item.local.StockTransaction;
+import com.shippingflow.core.domain.aggregate.item.local.StockTransactionType;
 import com.shippingflow.core.usecase.aggregate.item.vo.StockTransactionVo;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -46,7 +46,7 @@ public class StockTransactionEntity {
     public StockTransaction toDomain() {
         return StockTransaction.of(
                 this.id,
-                this.stock.toDomain(),
+//                this.stock.toDomain(),
                 this.quantity,
                 this.transactionType,
                 this.transactionDateTime
