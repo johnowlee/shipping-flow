@@ -6,6 +6,6 @@ import java.time.LocalDateTime;
 
 public record StockTransactionVo(
         Long id,
-        StockVo stock, long quantity,
+        long quantity,
         StockTransactionType transactionType,
         LocalDateTime transactionDateTime) {}

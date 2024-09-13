@@ -62,7 +62,7 @@ public class Stock {
         List<StockTransactionVo> stockTransactionVoList = this.transactions.stream()
                 .map(StockTransaction::toVo)
                 .toList();
-        return new StockVo(this.id, this.item, this.quantity, stockTransactionVoList);
+        return new StockVo(this.id, this.quantity, stockTransactionVoList);
     }
 
     @Override

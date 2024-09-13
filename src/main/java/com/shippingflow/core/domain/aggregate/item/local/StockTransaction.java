@@ -41,7 +41,7 @@ public class StockTransaction {
     }
 
     public StockTransactionVo toVo() {
-        return new StockTransactionVo(this.id, this.stock.toVo(), this.quantity, this.transactionType, this.transactionDateTime);
+        return new StockTransactionVo(this.id, this.quantity, this.transactionType, this.transactionDateTime);
     }
 
     @Override
