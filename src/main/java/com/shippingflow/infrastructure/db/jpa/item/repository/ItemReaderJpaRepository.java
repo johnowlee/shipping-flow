@@ -1,8 +1,11 @@
 package com.shippingflow.infrastructure.db.jpa.item.repository;
 
-import com.shippingflow.core.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.aggregate.item.repository.ItemReaderRepository;
+import com.shippingflow.core.aggregate.item.root.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -13,5 +16,10 @@ public class ItemReaderJpaRepository implements ItemReaderRepository {
     @Override
     public boolean existsByName(String name) {
         return itemJpaRepository.existsByName(name);
+    }
+
+    @Override
+    public Optional<Item> findById(long itemId) {
+        return Optional.empty();
     }
 }
