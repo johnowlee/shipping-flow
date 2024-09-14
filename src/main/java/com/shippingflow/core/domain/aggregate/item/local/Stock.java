@@ -39,10 +39,16 @@ public class Stock {
     }
 
     public void increase(long quantity) {
+        if (this.quantity == null) {
+            this.quantity = 0L;
+        }
         this.quantity += quantity;
     }
 
     public void decrease(long quantity) {
+        if (this.quantity == null) {
+            this.quantity = 0L;
+        }
         if (this.quantity < quantity) {
             throw DomainException.from(ItemError.STOCK_SHORTAGE);
         }
