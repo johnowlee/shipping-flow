@@ -1,95 +1,61 @@
-//package com.shippingflow.core.usecase.stock;
-//
-//import com.shippingflow.core.aggregate.item.local.Stock;
-//import com.shippingflow.core.aggregate.item.local.StockTransaction;
-//import com.shippingflow.core.aggregate.item.local.StockTransactionType;
-//import com.shippingflow.core.aggregate.item.repository.StockReaderRepository;
-//import com.shippingflow.core.aggregate.item.local.repository.StockTransactionWriterRepository;
-//import com.shippingflow.core.aggregate.item.local.repository.StockWriterRepository;
-//import com.shippingflow.core.exception.DomainException;
-//import com.shippingflow.core.usecase.common.ClockManager;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//import java.time.LocalDateTime;
-//import java.util.Optional;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
-//import static org.assertj.core.groups.Tuple.tuple;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.BDDMockito.given;
-//import static org.mockito.BDDMockito.then;
-//import static org.mockito.Mockito.times;
-//
-//@ExtendWith(MockitoExtension.class)
-//class IncreaseStockUseCaseTest {
-//
-//    @Mock
-//    StockReaderRepository stockReaderRepository;
-//
-//    @Mock
-//    StockWriterRepository stockWriterRepository;
-//
-//    @Mock
-//    StockTransactionWriterRepository stockTransactionWriterRepository;
-//
-//    @Mock
-//    ClockManager clockManager;
-//
-//    @InjectMocks
-//    IncreaseStockUseCase increaseStockUseCase;
-//
-//    @DisplayName("재고 수량을 증가시키고 내역을 남긴다.")
-//    @Test
-//    void execute_increaseStockQuantityAndSaveTransaction() {
-//        // given
-//        long id = 1L;
-//        long quantity = 100L;
-//        Stock stock = Stock.builder().id(id).quantity(quantity).build();
-//        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 10, 18, 0, 0);
-//        StockTransaction stockTransaction = StockTransaction.builder()
-//                .id(1L)
-//                .stock(stock)
-//                .quantity(quantity)
-//                .transactionType(StockTransactionType.INCREASE)
-//                .transactionDateTime(transactionDateTime)
-//                .build();
-//        given(stockReaderRepository.findById(id)).willReturn(Optional.of(stock));
-//        given(stockWriterRepository.update(stock)).willReturn(stock);
-//        given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
-//        given(stockTransactionWriterRepository.save(any(StockTransaction.class))).willReturn(stockTransaction);
-//
-//        // when
-//        UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(id, 300L);
-//        UpdateStockUseCase.Output output = increaseStockUseCase.execute(input);
-//
-//        // then
-//        Stock actual = output.getStock();
-//        assertThat(actual.getId()).isEqualTo(id);
-//        assertThat(actual.getQuantity()).isEqualTo(100L + 300L);
-//
-//        then(stockTransactionWriterRepository).should(times(1)).save(any(StockTransaction.class));
-//        assertThat(actual.getTransactions()).hasSize(1)
-//                .extracting("id", "stock", "quantity", "transactionType", "transactionDateTime")
-//                .contains(tuple(1L, stock, quantity, StockTransactionType.INCREASE, transactionDateTime));
-//    }
-//
-//    @DisplayName("재고 수량을 증가시킬 때 재고를 찾을 수 없으면 예외가 발생한다.")
-//    @Test
-//    void execute_shouldThrowExceptionWhenStockIsNotFound() {
-//        // given
-//        long id = 1L;
-//        given(stockReaderRepository.findById(id)).willReturn(Optional.empty());
-//
-//        // when & then
-//        UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(id, 300L);
-//        assertThatThrownBy(() -> increaseStockUseCase.execute(input))
-//                        .isInstanceOf(DomainException.class)
-//                        .hasMessage(StockError.NOT_FOUND_STOCK.getMessage());
-//    }
-//}
+package com.shippingflow.core.usecase.aggregate.item;
+
+import com.shippingflow.core.domain.aggregate.item.local.Stock;
+import com.shippingflow.core.domain.aggregate.item.repository.ItemReaderRepository;
+import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
+import com.shippingflow.core.domain.aggregate.item.root.Item;
+import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.usecase.common.ClockManager;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
+@ExtendWith(MockitoExtension.class)
+class IncreaseStockUseCaseTest {
+
+    @Mock
+    ItemReaderRepository itemReaderRepository;
+
+    @Mock
+    ItemWriterRepository itemWriterRepository;
+
+    @Mock
+    ClockManager clockManager;
+
+    @InjectMocks
+    IncreaseStockUseCase increaseStockUseCase;
+
+    @DisplayName("재고 수량을 증가시키고 내역을 남긴다.")
+    @Test
+    void execute_increaseStockQuantityAndRecordTransaction() {
+        // given
+        long itemId = 1L;
+        long quantity = 1000L;
+        Item item = Item.builder().id(itemId).build();
+        Stock stock = Stock.builder().id(1L).build();
+        item.bind(stock);
+
+        UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(1L, quantity);
+
+        given(itemReaderRepository.findById(input.getItemId())).willReturn(Optional.of(item));
+        given(itemWriterRepository.update(any(ItemVo.class))).willReturn(item);
+
+        // when
+        UpdateStockUseCase.Output result = increaseStockUseCase.execute(input);
+
+        // then
+        ItemVo actual = result.getItem();
+        assertThat(actual.id()).isEqualTo(itemId);
+        assertThat(actual.stock().quantity()).isEqualTo(quantity);
+    }
+
+}
