@@ -44,20 +44,6 @@ class StockTest {
         Assertions.assertThat(stock.getQuantity()).isEqualTo(10L + 30L + 60L);
     }
 
-    @DisplayName("최초 재고 수량이 null이면 0으로 초기화 후 재고 수량을 증가시킨다.")
-    @Test
-    void increase_shouldStockQuantityWillBeZeroWhenQuantityIsNull() {
-        // given
-        Stock stock = Stock.builder().id(1L).quantity(null).build();
-
-        // when
-        stock.increase(30L);
-        stock.increase(60L);
-
-        // then
-        Assertions.assertThat(stock.getQuantity()).isEqualTo(30L + 60L);
-    }
-
     @DisplayName("재고 수량을 감소시킨다.")
     @Test
     void decrease() {
@@ -70,19 +56,6 @@ class StockTest {
 
         // then
         Assertions.assertThat(stock.getQuantity()).isEqualTo(100L - 30L - 60L);
-    }
-
-    @DisplayName("최초 생성된 재고의 수량이 null이면 0으로 초기화 후 재고 감소 시 예외를 발생시킨다.")
-    @Test
-    void decrease_shouldThrowWhenStockQuantityIsNull() {
-        // given
-        Stock stock = Stock.builder().id(1L).quantity(null).build();
-
-        // when & then
-        stock.decrease(100L);
-        Assertions.assertThatThrownBy(() -> stock.decrease(1L))
-                .isInstanceOf(DomainException.class)
-                .hasMessage(ItemError.STOCK_SHORTAGE.getMessage());
     }
 
     @DisplayName("재고 수량 감소 시 남아있는 재고의 양이 부족하면 예외가 발생한다.")
@@ -131,6 +104,33 @@ class StockTest {
         Assertions.assertThatThrownBy(() -> stock.recordTransaction(transactionType, quantity, transactionDateTime))
                         .isInstanceOf(DomainException.class)
                         .hasMessage(ItemError.INSUFFICIENT_QUANTITY.getMessage());
+    }
+
+    @DisplayName("재고 입출고 내역을 추가한다.")
+    @Test
+    void addTransaction() {
+        // given
+        Stock stock = buildStock(1L, 0);
+        long transactionId = 1L;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        long quantity = 1000L;
+        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 13, 12, 0, 0);
+        StockTransaction stockTransaction = StockTransaction.builder()
+                .id(transactionId)
+                .transactionType(transactionType)
+                .quantity(quantity)
+                .transactionDateTime(transactionDateTime)
+                .build();
+
+        // when
+        stock.addTransaction(stockTransaction);
+
+        // then
+        Assertions.assertThat(stock.getTransactions()).hasSize(1)
+                .extracting("id", "transactionType", "quantity", "transactionDateTime")
+                .contains(
+                        tuple(transactionId, transactionType, quantity, transactionDateTime)
+                );
     }
 
     private static Stock buildStock(long id, long quantity) {

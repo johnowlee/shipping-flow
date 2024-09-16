@@ -2,12 +2,15 @@ package com.shippingflow.core.usecase.item;
 
 import com.shippingflow.core.domain.aggregate.item.component.ItemValidator;
 import com.shippingflow.core.domain.aggregate.item.local.Stock;
+import com.shippingflow.core.domain.aggregate.item.local.StockTransaction;
+import com.shippingflow.core.domain.aggregate.item.local.StockTransactionType;
 import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
 import com.shippingflow.core.domain.aggregate.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
 import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.usecase.common.ClockManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +32,9 @@ class CreateItemUseCaseTest {
     @Mock
     ItemValidator itemValidator;
 
+    @Mock
+    ClockManager clockManager;
+
     @InjectMocks
     CreateItemUseCase createItemUseCase;
 
@@ -38,8 +45,16 @@ class CreateItemUseCaseTest {
         String name = "상품A";
         Long price = 10_000L;
         String description = "상품A 입니다.";
-        CreateItemUseCase.Input input = CreateItemUseCase.Input.of(name, price, description);
+        long quantity = 1000L;
+        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 16, 16, 0, 0);
+        CreateItemUseCase.Input input = CreateItemUseCase.Input.of(name, price, description, quantity);
+
+        given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
         Item createdItem = Item.create(input.getName(), input.getPrice(), input.getDescription());
+        Stock createdStock = Stock.create(quantity);
+        createdItem.bind(createdStock);
+        createdItem.recordStockTransaction(StockTransactionType.INCREASE, quantity, transactionDateTime);
+
         ItemVo createdItemVo = createdItem.toVo();
 
         Item savedItem = Item.builder()
@@ -51,9 +66,17 @@ class CreateItemUseCaseTest {
 
         Stock savedStock = Stock.builder()
                 .id(1L)
-                .quantity(null)
+                .quantity(quantity)
                 .build();
 
+        StockTransaction savedStockTransaction = StockTransaction.builder()
+                .id(1L)
+                .transactionType(StockTransactionType.INCREASE)
+                .quantity(quantity)
+                .transactionDateTime(transactionDateTime)
+                .build();
+
+        savedStock.addTransaction(savedStockTransaction);
         savedItem.bind(savedStock);
 
         willDoNothing().given(itemValidator).validateItemNameDuplication(name);
@@ -69,6 +92,12 @@ class CreateItemUseCaseTest {
         assertThat(savedItemVo.description()).isEqualTo(savedItem.getDescription());
         assertThat(savedItemVo.price()).isEqualTo(savedItem.getPrice());
         assertThat(savedItemVo.stock()).isEqualTo(savedStock.toVo());
+        assertThat(savedItemVo.stock().quantity()).isEqualTo(quantity);
+        assertThat(savedItemVo.stock().transactions()).hasSize(1)
+                .extracting("quantity", "transactionType", "transactionDateTime")
+                .contains(
+                        tuple(1000L, StockTransactionType.INCREASE, transactionDateTime)
+                );
     }
 
     @DisplayName("신규 상품을 등록할때 중복된 상품 이름이 있으면 예외가 발생한다.")
@@ -78,7 +107,7 @@ class CreateItemUseCaseTest {
         String name = "상품A";
         Long price = 10_000L;
         String description = "상품A 입니다.";
-        CreateItemUseCase.Input input = CreateItemUseCase.Input.of(name, price, description);
+        CreateItemUseCase.Input input = CreateItemUseCase.Input.of(name, price, description, null);
 
         willThrow(DomainException.from(ItemError.ITEM_NAME_ALREADY_EXISTS))
                 .given(itemValidator)

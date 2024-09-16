@@ -8,10 +8,11 @@ public record ItemRequest(
         @NotBlank
         String name,
         Long price,
-        String description
+        String description,
+        Long quantity
 ) {
 
     public CreateItemUseCase.Input toInput() {
-        return CreateItemUseCase.Input.of(name, price, description);
+        return CreateItemUseCase.Input.of(name, price, description, quantity);
     }
 }

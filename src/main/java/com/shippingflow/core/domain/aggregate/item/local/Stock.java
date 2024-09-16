@@ -17,20 +17,20 @@ import java.util.Objects;
 public class Stock {
     private Long id;
     private Item item;
-    private Long quantity;
+    private long quantity;
     private List<StockTransaction> transactions = new ArrayList<>();
 
     @Builder
-    private Stock(Long id, Long quantity) {
+    private Stock(Long id, long quantity) {
         this.id = id;
         this.quantity = quantity;
     }
 
-    public static Stock create() {
-        return builder().build();
+    public static Stock create(long quantity) {
+        return builder().quantity(quantity).build();
     }
 
-    public static Stock of(Long id, Long quantity) {
+    public static Stock of(Long id, long quantity) {
         return Stock.builder().id(id).quantity(quantity).build();
     }
 
@@ -39,16 +39,10 @@ public class Stock {
     }
 
     public void increase(long quantity) {
-        if (this.quantity == null) {
-            this.quantity = 0L;
-        }
         this.quantity += quantity;
     }
 
     public void decrease(long quantity) {
-        if (this.quantity == null) {
-            this.quantity = 0L;
-        }
         if (this.quantity < quantity) {
             throw DomainException.from(ItemError.STOCK_SHORTAGE);
         }
@@ -60,8 +54,12 @@ public class Stock {
             throw DomainException.from(ItemError.INSUFFICIENT_QUANTITY);
         }
         StockTransaction transaction = StockTransaction.create(transactionType, quantity, transactionDateTime);
-        this.transactions.add(transaction);
-        transaction.bindTo(this);
+        addTransaction(transaction);
+    }
+
+    public void addTransaction(StockTransaction stockTransaction) {
+        this.transactions.add(stockTransaction);
+        stockTransaction.bindTo(this);
     }
 
     public StockVo toVo() {

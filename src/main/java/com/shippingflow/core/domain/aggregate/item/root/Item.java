@@ -2,7 +2,10 @@ package com.shippingflow.core.domain.aggregate.item.root;
 
 import com.shippingflow.core.domain.aggregate.item.local.Stock;
 import com.shippingflow.core.domain.aggregate.item.local.StockTransactionType;
+import com.shippingflow.core.exception.DomainException;
+import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.usecase.aggregate.item.vo.StockVo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -36,10 +39,7 @@ public class Item {
     }
 
     public static Item create(String name, Long price, String description) {
-        Item item = of(null, name, price, description);
-        Stock stock = Stock.create();
-        item.bind(stock);
-        return item;
+        return of(null, name, price, description);
     }
 
     public void bind(Stock stock) {
@@ -48,19 +48,27 @@ public class Item {
     }
 
     public void increaseStock(long quantity) {
+        if (isStockNull()) {
+            initializeStock(quantity);
+            return;
+        }
         this.stock.increase(quantity);
     }
 
     public void decreaseStock(long quantity) {
+        if (isStockNull()) {
+            throw DomainException.from(ItemError.STOCK_SHORTAGE);
+        }
         this.stock.decrease(quantity);
     }
 
     public void recordStockTransaction(StockTransactionType transactionType, long quantity, LocalDateTime transactionDateTime) {
-        stock.recordTransaction(transactionType,quantity, transactionDateTime);
+        stock.recordTransaction(transactionType, quantity, transactionDateTime);
     }
 
     public ItemVo toVo() {
-        return new ItemVo(this.id, this.name, this.price, this.description, this.stock.toVo());
+        StockVo stockVo = this.stock != null ? this.stock.toVo() : null;
+        return new ItemVo(this.id, this.name, this.price, this.description, stockVo);
     }
 
     @Override
@@ -74,5 +82,14 @@ public class Item {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    private void initializeStock(long quantity) {
+        this.stock = Stock.create(quantity);
+        bind(this.stock);
+    }
+
+    private boolean isStockNull() {
+        return this.stock == null;
     }
 }

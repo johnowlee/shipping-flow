@@ -19,13 +19,13 @@ public class DecreaseStockUseCase extends UpdateStockUseCase {
     }
 
     @Override
-    protected Item updateQuantity(Item item, long quantity) {
+    protected Item updateStockQuantity(Item item, long quantity) {
         item.decreaseStock(quantity);
         return item;
     }
 
     @Override
-    protected Item addStockTransaction(Item item, long quantity, ClockManager clockManager) {
+    protected Item recordStockTransaction(Item item, long quantity, ClockManager clockManager) {
         item.recordStockTransaction(StockTransactionType.DECREASE, quantity, clockManager.getNowDateTime());
         return item;
     }
