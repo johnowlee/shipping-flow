@@ -1,15 +1,15 @@
 package com.shippingflow.core.usecase.item;
 
-import com.shippingflow.core.domain.aggregate.item.component.ItemValidator;
-import com.shippingflow.core.domain.aggregate.item.local.Stock;
-import com.shippingflow.core.domain.aggregate.item.local.StockTransaction;
-import com.shippingflow.core.domain.aggregate.item.local.StockTransactionType;
-import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
-import com.shippingflow.core.domain.aggregate.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
+import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
-import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.usecase.common.ClockManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

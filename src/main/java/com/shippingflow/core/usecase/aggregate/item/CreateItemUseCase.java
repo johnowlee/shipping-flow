@@ -1,12 +1,12 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.domain.aggregate.item.component.ItemValidator;
-import com.shippingflow.core.domain.aggregate.item.local.Stock;
-import com.shippingflow.core.domain.aggregate.item.local.StockTransactionType;
-import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
-import com.shippingflow.core.domain.aggregate.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
+import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.usecase.UseCase;
-import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

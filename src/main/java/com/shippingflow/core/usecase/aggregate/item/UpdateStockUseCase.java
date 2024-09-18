@@ -1,12 +1,12 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.domain.aggregate.item.repository.ItemReaderRepository;
-import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
-import com.shippingflow.core.domain.aggregate.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.UseCase;
-import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

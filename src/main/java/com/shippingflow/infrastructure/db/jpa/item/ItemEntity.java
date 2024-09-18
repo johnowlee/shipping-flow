@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item;
 
-import com.shippingflow.core.domain.aggregate.item.root.Item;
-import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.infrastructure.db.jpa.stock.StockEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

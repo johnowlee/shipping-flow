@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.stock.repository;
 
-import com.shippingflow.core.domain.aggregate.item.local.Stock;
-import com.shippingflow.core.domain.aggregate.item.repository.StockReaderRepository;
+import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.repository.StockReaderRepository;
 import com.shippingflow.infrastructure.db.jpa.stock.StockEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
