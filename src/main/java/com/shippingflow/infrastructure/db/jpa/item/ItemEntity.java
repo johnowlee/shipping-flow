@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item;
 
-import com.shippingflow.core.aggregate.item.root.Item;
-import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.infrastructure.db.jpa.stock.StockEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,39 +30,41 @@ public class ItemEntity {
     private StockEntity stock;
 
     @Builder
-    private ItemEntity(Long id, String name, Long price, String description, StockEntity stock) {
+    private ItemEntity(Long id, String name, Long price, String description) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
-        this.stock = stock;
     }
 
-    private static ItemEntity of(Long id, String name, Long price, String description, StockEntity stock) {
+    public static ItemEntity create(String name, Long price, String description) {
+        return of(null, name, price, description);
+    }
+
+    public static ItemEntity createFrom(ItemVo itemVo) {
+        ItemEntity itemEntity = create(itemVo.name(), itemVo.price(), itemVo.description());
+        StockEntity stockEntity = StockEntity.create();
+        itemEntity.bind(stockEntity);
+        return itemEntity;
+    }
+
+    public Item toDomain() {
+        Item item = Item.of(this.id, this.name, this.price, this.description);
+        item.bind(this.stock.toDomain());
+        return item;
+    }
+
+    private static ItemEntity of(Long id, String name, Long price, String description) {
         return builder()
                 .id(id)
                 .name(name)
                 .price(price)
                 .description(description)
-                .stock(stock)
                 .build();
     }
 
-    public static ItemEntity create(ItemVo itemVo) {
-        ItemEntity itemEntity = of(null, itemVo.name(), itemVo.price(), itemVo.description(), null);
-        StockEntity stockEntity = StockEntity.create(itemVo.stock());
-        itemEntity.assignStock(stockEntity);
-        return itemEntity;
-    }
-
-    public Item toDomain() {
-        this.assignStock(this.stock);
-        return Item.of(this.id, this.name, this.price, this.description, this.stock.toDomain());
-    }
-
-    private void assignStock(StockEntity stock) {
-        if (this.stock != null) return;
+    private void bind(StockEntity stock) {
         this.stock = stock;
-        stock.assignedTo(this);
+        stock.bindTo(this);
     }
 }

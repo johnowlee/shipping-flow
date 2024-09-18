@@ -1,7 +1,7 @@
 package com.shippingflow.presenter.api.item.controller.response;
 
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
-import com.shippingflow.core.usecase.aggregate.item.vo.ItemVo;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 
 public record ItemResponse(long id, String name, Long price, String description) {
 
