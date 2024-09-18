@@ -20,29 +20,36 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
 
     @Override
     public Output execute(Input input) {
-        long quantity = input.getQuantity();
-        return itemReaderRepository.findById(input.getItemId())
-                .map(item -> updateStockQuantity(item, quantity))
-                .map(item -> recordStockTransaction(item, quantity, clockManager))
-                .map(this::persist)
-                .map(UpdateStockUseCase::toOutput)
+        Item foundItem = findItem(input.getItemId());
+        updateStock(foundItem, input.getQuantity());
+        return toOutput(foundItem);
+    }
+
+    private Item findItem(long itemId) {
+        return itemReaderRepository.findById(itemId)
                 .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
     }
 
-    private static Output toOutput(Item item) {
-        return Output.of(item.toVo());
+    private void updateStock(Item foundItem, long quantity) {
+        updateStockQuantity(foundItem, quantity);
+        recordStockTransaction(foundItem, quantity, clockManager);
+        persist(foundItem);
     }
 
     private Item persist(Item item) {
         return itemWriterRepository.update(item.toVo());
     }
 
+    private static Output toOutput(Item item) {
+        return Output.of(item.toVo());
+    }
+
     protected abstract Item updateStockQuantity(Item item, long quantity);
 
     protected abstract Item recordStockTransaction(Item item, long quantity, ClockManager clockManager);
-
     @Value(staticConstructor = "of")
     public static class Input implements UseCase.Input {
+
         long itemId;
         long quantity;
     }
