@@ -43,4 +43,31 @@ class ItemWriterTest {
         assertThat(actual.getName()).isEqualTo("itemA");
         assertThat(actual.getPrice()).isEqualTo(1000L);
     }
+
+    @DisplayName("상품을 수정한다.")
+    @Test
+    void update() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(1000L)
+                .build();
+
+        Item updatingItem = Item.builder()
+                .id(item.getId())
+                .name("itemB")
+                .price(1500L)
+                .build();
+
+        given(itemWriterRepository.update(updatingItem.toVo())).willReturn(updatingItem);
+
+        // when
+        Item actual = itemWriter.update(updatingItem);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(1L);
+        assertThat(actual.getName()).isEqualTo("itemB");
+        assertThat(actual.getPrice()).isEqualTo(1500L);
+    }
 }

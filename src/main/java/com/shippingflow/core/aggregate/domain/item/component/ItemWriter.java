@@ -14,4 +14,8 @@ public class ItemWriter {
     public Item save(Item item) {
         return itemWriterRepository.save(item.toVo());
     }
+
+    public Item update(Item item) {
+        return itemWriterRepository.update(item.toVo());
+    }
 }
