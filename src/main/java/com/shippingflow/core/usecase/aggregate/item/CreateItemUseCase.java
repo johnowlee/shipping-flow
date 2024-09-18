@@ -1,12 +1,12 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
 import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
+import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.aggregate.vo.ItemVo;
+import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateItemUseCase.Output> {
 
     private final ItemValidator itemValidator;
-    private final ItemWriterRepository itemWriterRepository;
+    private final ItemWriter itemWriter;
     private final ClockManager clockManager;
 
     @Override
     public Output execute(Input input) {
         itemValidator.validateItemNameDuplication(input.name);
-        Item item = itemWriterRepository.save(createItemFrom(input).toVo());
+        Item item = itemWriter.save(createItemFrom(input));
         return Output.of(item.toVo());
     }
 
