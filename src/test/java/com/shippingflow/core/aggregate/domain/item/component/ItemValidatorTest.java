@@ -1,7 +1,5 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
-import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +16,7 @@ import static org.mockito.BDDMockito.given;
 class ItemValidatorTest {
 
     @Mock
-    ItemReaderRepository itemReaderRepository;
+    ItemReader itemReader;
 
     @InjectMocks
     ItemValidator itemValidator;
@@ -27,22 +25,22 @@ class ItemValidatorTest {
     @Test
     void validateItemNameDuplication() {
         // given
-        String itenName = "itemA";
-        given(itemReaderRepository.existsByName(itenName)).willReturn(false);
+        String itemName = "itemA";
+        given(itemReader.doesItemExistByName(itemName)).willReturn(false);
 
         // when & then
-        itemValidator.validateItemNameDuplication(itenName);
+        itemValidator.validateItemNameDuplication(itemName);
     }
 
     @DisplayName("중복된 상품명이 있으면 예외가 발생한다.")
     @Test
     void validateItemNameDuplication_shouldThrowExceptionWhenDuplicateItemNameExists() {
         // given
-        String itenName = "itemA";
-        given(itemReaderRepository.existsByName(itenName)).willReturn(true);
+        String itemName = "itemA";
+        given(itemReader.doesItemExistByName(itemName)).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> itemValidator.validateItemNameDuplication(itenName))
+        assertThatThrownBy(() -> itemValidator.validateItemNameDuplication(itemName))
                 .isInstanceOf(DomainException.class)
                 .hasMessage(ItemError.ITEM_NAME_ALREADY_EXISTS.getMessage());
     }
