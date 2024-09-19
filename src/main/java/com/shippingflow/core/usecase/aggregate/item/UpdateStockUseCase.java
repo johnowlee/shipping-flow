@@ -1,12 +1,10 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.aggregate.domain.item.component.ItemReader;
+import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.exception.DomainException;
-import com.shippingflow.core.exception.error.ItemError;
-import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.aggregate.vo.ItemVo;
+import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -14,8 +12,8 @@ import lombok.Value;
 @RequiredArgsConstructor
 public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Input, UpdateStockUseCase.Output> {
 
-    private final ItemReaderRepository itemReaderRepository;
-    private final ItemWriterRepository itemWriterRepository;
+    private final ItemReader itemReader;
+    private final ItemWriter itemWriter;
     private final ClockManager clockManager;
 
     @Override
@@ -26,8 +24,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     }
 
     private Item findItem(long itemId) {
-        return itemReaderRepository.findById(itemId)
-                .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
+        return itemReader.findItemById(itemId);
     }
 
     private void updateStock(Item foundItem, long quantity) {
@@ -37,7 +34,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     }
 
     private Item persist(Item item) {
-        return itemWriterRepository.update(item.toVo());
+        return itemWriter.update(item);
     }
 
     private static Output toOutput(Item item) {

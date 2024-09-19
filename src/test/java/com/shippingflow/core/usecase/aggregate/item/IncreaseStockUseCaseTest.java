@@ -1,9 +1,9 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
+import com.shippingflow.core.aggregate.domain.item.component.ItemReader;
+import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,10 +28,10 @@ import static org.mockito.Mockito.times;
 class IncreaseStockUseCaseTest {
 
     @Mock
-    ItemReaderRepository itemReaderRepository;
+    ItemReader itemReader;
 
     @Mock
-    ItemWriterRepository itemWriterRepository;
+    ItemWriter itemWriter;
 
     @Mock
     ClockManager clockManager;
@@ -60,9 +59,9 @@ class IncreaseStockUseCaseTest {
         increasedItem.bind(stock);
         increasedItem.recordStockTransaction(StockTransactionType.INCREASE, quantityToAdd, transactionDateTime);
 
-        given(itemReaderRepository.findById(itemId)).willReturn(Optional.of(item));
+        given(itemReader.findItemById(itemId)).willReturn(item);
         given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
-        given(itemWriterRepository.update(increasedItem.toVo())).willReturn(increasedItem);
+        given(itemWriter.update(increasedItem)).willReturn(increasedItem);
 
         // when
         UpdateStockUseCase.Output output = increaseStockUseCase.execute(input);
@@ -75,8 +74,8 @@ class IncreaseStockUseCaseTest {
                 .contains(
                         tuple(StockTransactionType.INCREASE, quantityToAdd, transactionDateTime)
                 );
-        then(itemReaderRepository).should(times(1)).findById(itemId);
-        then(itemWriterRepository).should(times(1)).update(item.toVo());
+        then(itemReader).should(times(1)).findItemById(itemId);
+        then(itemWriter).should(times(1)).update(item);
     }
 
     @DisplayName("상품 조회시 존재하지 않으면 예외가 발생한다.")
@@ -85,7 +84,7 @@ class IncreaseStockUseCaseTest {
         // given
         UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(1L, 50L);
 
-        given(itemReaderRepository.findById(1L)).willReturn(Optional.empty());
+        given(itemReader.findItemById(1L)).willThrow(DomainException.from(ItemError.NOT_FOUND_ITEM));
 
         // when & then
         assertThatThrownBy(() -> increaseStockUseCase.execute(input))
