@@ -1,6 +1,7 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
 import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
@@ -20,5 +21,11 @@ public class ItemReader {
     public Item findItemById(long id) {
         return itemReaderRepository.findById(id)
                 .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
+    }
+
+    public Item getItemWithStockById(long id) {
+        ItemWithStockDto dto = itemReaderRepository.findItemWithStockById(id)
+                .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
+        return Item.from(dto);
     }
 }

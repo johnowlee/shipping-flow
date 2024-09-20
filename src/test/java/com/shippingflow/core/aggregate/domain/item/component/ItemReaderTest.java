@@ -1,6 +1,9 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
 import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.StockDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
@@ -90,6 +93,49 @@ class ItemReaderTest {
         Assertions.assertThatThrownBy(() -> itemReader.findItemById(1L))
                         .isInstanceOf(DomainException.class)
                         .hasMessage(ItemError.NOT_FOUND_ITEM.getMessage());
+        then(itemReaderRepository).should(times(1)).findById(eq(1L));
+    }
+
+    @DisplayName("상품 ID로 상품과 재고를 조회한다.")
+    @Test
+    void getItemWithStockById() {
+        // given
+        long itemId = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(itemId, name, price, description);
+
+        long stockId = 1L;
+        long quantity = 1000L;
+        StockDto stockDto = new StockDto(stockId, quantity);
+
+        ItemWithStockDto itemWithStockDto = new ItemWithStockDto(itemDto, stockDto);
+        given(itemReaderRepository.findItemWithStockById(itemId)).willReturn(Optional.of(itemWithStockDto));
+
+        // when
+        Item actual = itemReader.getItemWithStockById(itemId);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(itemId);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+        assertThat(actual.getStock().getId()).isEqualTo(stockId);
+        assertThat(actual.getStock().getQuantity()).isEqualTo(quantity);
+        then(itemReaderRepository).should(times(1)).findItemWithStockById(eq(itemId));
+    }
+
+    @DisplayName("상품 ID로 조회 시 상품이 존재하지 않으면 예외가 발생한다.")
+    @Test
+    void getItemWithStockById_shouldThrowExceptionWhenItemDoesNotExist() {
+        // given
+        given(itemReaderRepository.findItemWithStockById(anyLong())).willReturn(Optional.empty());
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> itemReader.getItemWithStockById(1L))
+                .isInstanceOf(DomainException.class)
+                .hasMessage(ItemError.NOT_FOUND_ITEM.getMessage());
         then(itemReaderRepository).should(times(1)).findById(eq(1L));
     }
 }
