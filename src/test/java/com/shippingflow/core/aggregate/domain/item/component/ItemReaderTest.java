@@ -136,6 +136,6 @@ class ItemReaderTest {
         Assertions.assertThatThrownBy(() -> itemReader.getItemWithStockById(1L))
                 .isInstanceOf(DomainException.class)
                 .hasMessage(ItemError.NOT_FOUND_ITEM.getMessage());
-        then(itemReaderRepository).should(times(1)).findById(eq(1L));
+        then(itemReaderRepository).should(times(1)).findItemWithStockById(eq(1L));
     }
 }
