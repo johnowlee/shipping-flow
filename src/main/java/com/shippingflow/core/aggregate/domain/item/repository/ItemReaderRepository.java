@@ -1,6 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.repository;
 
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 
 import java.util.Optional;
 

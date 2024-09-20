@@ -2,9 +2,9 @@ package com.shippingflow.core.aggregate.domain.item.root;
 
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemDto;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemAggregateDto;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.aggregate.vo.StockVo;
 import com.shippingflow.core.exception.DomainException;
@@ -79,18 +79,18 @@ public class Item {
     }
 
     public static Item from(ItemWithStockDto dto) {
-        Item item = from(dto.itemDto());
+        Item item = from(dto.item());
         if (dto.hasStock()) {
-            Stock stock = Stock.from(dto.stockDto());
+            Stock stock = Stock.from(dto.stock());
             item.bind(stock);
         }
         return item;
     }
 
     public static Item from(ItemAggregateDto dto) {
-        Stock stock = Stock.from(dto.stockDto());
-        stock.addTransactionsFrom(dto.stockTransactionDtoList());
-        Item item = from(dto.itemDto());
+        Stock stock = Stock.from(dto.stock());
+        stock.addTransactionsFrom(dto.transactions());
+        Item item = from(dto.item());
         item.bind(stock);
         return item;
     }

@@ -1,6 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.local;
 
-import com.shippingflow.core.aggregate.domain.item.repository.dto.StockTransactionDto;
+import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

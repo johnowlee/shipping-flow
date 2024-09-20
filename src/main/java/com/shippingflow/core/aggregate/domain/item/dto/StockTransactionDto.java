@@ -1,4 +1,4 @@
-package com.shippingflow.core.aggregate.domain.item.repository.dto;
+package com.shippingflow.core.aggregate.domain.item.dto;
 
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 

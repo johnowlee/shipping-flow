@@ -1,6 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.local;
 
-import com.shippingflow.core.aggregate.domain.item.repository.dto.StockTransactionDto;
+import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
 import com.shippingflow.core.aggregate.vo.StockTransactionVo;
 import lombok.Builder;
 import lombok.Getter;

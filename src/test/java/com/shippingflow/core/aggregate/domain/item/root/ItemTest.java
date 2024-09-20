@@ -2,9 +2,9 @@ package com.shippingflow.core.aggregate.domain.item.root;
 
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemDto;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.StockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import org.assertj.core.api.Assertions;

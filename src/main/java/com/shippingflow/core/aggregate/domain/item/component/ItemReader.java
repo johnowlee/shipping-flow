@@ -1,7 +1,7 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
 import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
-import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
