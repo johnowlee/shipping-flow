@@ -2,7 +2,9 @@ package com.shippingflow.core.aggregate.domain.item.root;
 
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.StockDto;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import org.assertj.core.api.Assertions;
@@ -131,6 +133,79 @@ class ItemTest {
 
         // then
         then(stock).should(times(1)).recordTransaction(eq(transactionType), eq(quantity), eq(transactionDateTime));
+    }
+
+    @DisplayName("ItemDto를 Item으로 변환한다.")
+    @Test
+    void fromItemDto() {
+        // given
+        long id = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(id, name, price, description);
+
+        // when
+        Item actual = Item.from(itemDto);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(id);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+    }
+
+    @DisplayName("ItemWithStockDto를 Stock이 포함된 Item으로 변환한다.")
+    @Test
+    void fromItemWithStockDto_shouldReturnWithStockWhenStockIsNotNull() {
+        // given
+        long itemId = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(itemId, name, price, description);
+
+        long stockId = 1L;
+        long quantity = 1000L;
+        StockDto stockDto = new StockDto(stockId, quantity);
+
+        ItemWithStockDto itemWithStockDto = new ItemWithStockDto(itemDto, stockDto);
+
+        // when
+        Item actual = Item.from(itemWithStockDto);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(itemId);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+        assertThat(actual.getStock().getId()).isEqualTo(stockId);
+        assertThat(actual.getStock().getQuantity()).isEqualTo(quantity);
+    }
+
+    @DisplayName("ItemWithStockDto에서 StockDto가 null이면 Item만 변환한다.")
+    @Test
+    void fromItemWithStockDto_shouldReturnWithoutStockWhenStockIsNull() {
+        // given
+        long itemId = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(itemId, name, price, description);
+
+        StockDto stockDto = null;
+
+        ItemWithStockDto itemWithStockDto = new ItemWithStockDto(itemDto, stockDto);
+
+        // when
+        Item actual = Item.from(itemWithStockDto);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(itemId);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+        assertThat(actual.getStock()).isNull();
     }
 
     private Item buildItem(Long id, String name, Long price, String description) {

@@ -1,10 +1,12 @@
 package com.shippingflow.core.aggregate.domain.item.local;
 
+import com.shippingflow.core.aggregate.domain.item.repository.dto.StockDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.StockTransactionDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.exception.DomainException;
-import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.aggregate.vo.StockTransactionVo;
 import com.shippingflow.core.aggregate.vo.StockVo;
+import com.shippingflow.core.exception.DomainException;
+import com.shippingflow.core.exception.error.ItemError;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -34,6 +36,10 @@ public class Stock {
         return Stock.builder().id(id).quantity(quantity).build();
     }
 
+    public static Stock from(StockDto dto) {
+        return of(dto.id(), dto.quantity());
+    }
+
     public void bindTo(Item item) {
         this.item = item;
     }
@@ -60,6 +66,12 @@ public class Stock {
     public void addTransaction(StockTransaction stockTransaction) {
         this.transactions.add(stockTransaction);
         stockTransaction.bindTo(this);
+    }
+
+    public void addTransactionsFrom(List<StockTransactionDto> stockTransactionDtoList) {
+        stockTransactionDtoList.stream()
+                .map(StockTransaction::from)
+                .forEach(this::addTransaction);
     }
 
     public StockVo toVo() {

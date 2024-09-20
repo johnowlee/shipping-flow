@@ -2,10 +2,13 @@ package com.shippingflow.core.aggregate.domain.item.root;
 
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.exception.DomainException;
-import com.shippingflow.core.exception.error.ItemError;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemAggregateDto;
+import com.shippingflow.core.aggregate.domain.item.repository.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.aggregate.vo.StockVo;
+import com.shippingflow.core.exception.DomainException;
+import com.shippingflow.core.exception.error.ItemError;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -69,6 +72,27 @@ public class Item {
     public ItemVo toVo() {
         StockVo stockVo = this.stock != null ? this.stock.toVo() : null;
         return new ItemVo(this.id, this.name, this.price, this.description, stockVo);
+    }
+
+    public static Item from(ItemDto dto) {
+        return of(dto.id(), dto.name(), dto.price(), dto.description());
+    }
+
+    public static Item from(ItemWithStockDto dto) {
+        Item item = from(dto.itemDto());
+        if (dto.hasStock()) {
+            Stock stock = Stock.from(dto.stockDto());
+            item.bind(stock);
+        }
+        return item;
+    }
+
+    public static Item from(ItemAggregateDto dto) {
+        Stock stock = Stock.from(dto.stockDto());
+        stock.addTransactionsFrom(dto.stockTransactionDtoList());
+        Item item = from(dto.itemDto());
+        item.bind(stock);
+        return item;
     }
 
     @Override
