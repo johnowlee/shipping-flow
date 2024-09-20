@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.BDDAssertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -54,6 +53,7 @@ class IncreaseStockUseCaseTest {
                 .name(item.getName())
                 .build();
         Stock stock = Stock.builder()
+                .id(1L)
                 .quantity(quantityToAdd)
                 .build();
         increasedItem.bind(stock);
@@ -68,12 +68,8 @@ class IncreaseStockUseCaseTest {
 
         // then
         assertThat(output.getItem()).isNotNull();
-        assertThat(output.getItem().stock().quantity()).isEqualTo(50L);
-        assertThat(output.getItem().stock().transactions()).hasSize(1)
-                .extracting("transactionType", "quantity", "transactionDateTime")
-                .contains(
-                        tuple(StockTransactionType.INCREASE, quantityToAdd, transactionDateTime)
-                );
+        assertThat(output.getStock().quantity()).isEqualTo(50L);
+
         then(itemReader).should(times(1)).getItemWithStockById(itemId);
         then(itemWriter).should(times(1)).update(item);
     }

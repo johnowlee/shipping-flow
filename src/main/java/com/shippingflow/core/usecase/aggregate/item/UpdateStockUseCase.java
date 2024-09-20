@@ -2,8 +2,9 @@ package com.shippingflow.core.usecase.aggregate.item;
 
 import com.shippingflow.core.aggregate.domain.item.component.ItemReader;
 import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     }
 
     private static Output toOutput(Item item) {
-        return Output.of(item.toVo());
+        return Output.of(item.toDto(), item.getStock().toDto());
     }
 
     protected abstract void updateStockQuantity(Item item, long quantity);
@@ -53,6 +54,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
 
     @Value(staticConstructor = "of")
     public static class Output implements UseCase.Output {
-        ItemVo item;
+        ItemDto item;
+        StockDto stock;
     }
 }

@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.BDDAssertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.any;
@@ -70,12 +69,7 @@ class DecreaseStockUseCaseTest {
         DecreaseStockUseCase.Output output = decreaseStockUseCase.execute(input);
 
         // then
-        assertThat(output.getItem().stock().quantity()).isEqualTo(300L - 50L);
-        assertThat(output.getItem().stock().transactions()).hasSize(1)
-                .extracting("transactionType", "quantity", "transactionDateTime")
-                .contains(
-                        tuple(StockTransactionType.DECREASE, 50L, transactionDateTime)
-                );
+        assertThat(output.getStock().quantity()).isEqualTo(300L - 50L);
 
         then(itemWriter).should(times(1)).update(any(Item.class));
     }
