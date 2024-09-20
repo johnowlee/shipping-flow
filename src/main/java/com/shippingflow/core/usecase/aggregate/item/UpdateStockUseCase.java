@@ -24,13 +24,13 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     }
 
     private Item findItem(long itemId) {
-        return itemReader.findItemById(itemId);
+        return itemReader.getItemWithStockById(itemId);
     }
 
-    private Item updateStock(Item foundItem, long quantity) {
-        updateStockQuantity(foundItem, quantity);
-        recordStockTransaction(foundItem, quantity, clockManager);
-        return persist(foundItem);
+    private Item updateStock(Item item, long quantity) {
+        updateStockQuantity(item, quantity);
+        recordStockTransaction(item, quantity, clockManager);
+        return persist(item);
     }
 
     private Item persist(Item item) {
@@ -44,9 +44,9 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     protected abstract void updateStockQuantity(Item item, long quantity);
 
     protected abstract void recordStockTransaction(Item item, long quantity, ClockManager clockManager);
+
     @Value(staticConstructor = "of")
     public static class Input implements UseCase.Input {
-
         long itemId;
         long quantity;
     }

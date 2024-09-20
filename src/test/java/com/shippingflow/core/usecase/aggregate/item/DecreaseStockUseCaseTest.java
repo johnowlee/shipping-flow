@@ -54,7 +54,7 @@ class DecreaseStockUseCaseTest {
         item.bind(stock);
 
         given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
-        given(itemReader.findItemById(itemId)).willReturn(item);
+        given(itemReader.getItemWithStockById(itemId)).willReturn(item);
 
         Item updatedItem = Item.of(item.getId(), item.getName(), item.getPrice(), item.getDescription());
         Stock updatedStock = Stock.builder().id(stock.getId()).quantity(stock.getQuantity() - decreaseQuantity).build();
@@ -91,7 +91,7 @@ class DecreaseStockUseCaseTest {
         Stock stock = Stock.builder().id(1L).quantity(30L).build();
         item.bind(stock);
 
-        given(itemReader.findItemById(itemId)).willReturn(item);
+        given(itemReader.getItemWithStockById(itemId)).willReturn(item);
 
         DecreaseStockUseCase.Input input = DecreaseStockUseCase.Input.of(itemId, decreaseQuantity);
 
@@ -108,7 +108,7 @@ class DecreaseStockUseCaseTest {
         // given
         UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(1L, 50L);
 
-        given(itemReader.findItemById(1L)).willThrow(DomainException.from(ItemError.NOT_FOUND_ITEM));
+        given(itemReader.getItemWithStockById(1L)).willThrow(DomainException.from(ItemError.NOT_FOUND_ITEM));
 
         // when & then
         assertThatThrownBy(() -> decreaseStockUseCase.execute(input))

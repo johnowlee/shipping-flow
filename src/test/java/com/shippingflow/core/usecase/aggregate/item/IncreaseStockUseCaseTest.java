@@ -59,7 +59,7 @@ class IncreaseStockUseCaseTest {
         increasedItem.bind(stock);
         increasedItem.recordStockTransaction(StockTransactionType.INCREASE, quantityToAdd, transactionDateTime);
 
-        given(itemReader.findItemById(itemId)).willReturn(item);
+        given(itemReader.getItemWithStockById(itemId)).willReturn(item);
         given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
         given(itemWriter.update(increasedItem)).willReturn(increasedItem);
 
@@ -74,7 +74,7 @@ class IncreaseStockUseCaseTest {
                 .contains(
                         tuple(StockTransactionType.INCREASE, quantityToAdd, transactionDateTime)
                 );
-        then(itemReader).should(times(1)).findItemById(itemId);
+        then(itemReader).should(times(1)).getItemWithStockById(itemId);
         then(itemWriter).should(times(1)).update(item);
     }
 
@@ -84,7 +84,7 @@ class IncreaseStockUseCaseTest {
         // given
         UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(1L, 50L);
 
-        given(itemReader.findItemById(1L)).willThrow(DomainException.from(ItemError.NOT_FOUND_ITEM));
+        given(itemReader.getItemWithStockById(1L)).willThrow(DomainException.from(ItemError.NOT_FOUND_ITEM));
 
         // when & then
         assertThatThrownBy(() -> increaseStockUseCase.execute(input))
