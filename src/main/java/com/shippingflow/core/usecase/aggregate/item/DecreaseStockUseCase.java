@@ -6,7 +6,9 @@ import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.usecase.common.ClockManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class DecreaseStockUseCase extends UpdateStockUseCase {
 
@@ -15,14 +17,12 @@ public class DecreaseStockUseCase extends UpdateStockUseCase {
     }
 
     @Override
-    protected Item updateStockQuantity(Item item, long quantity) {
+    protected void updateStockQuantity(Item item, long quantity) {
         item.decreaseStock(quantity);
-        return item;
     }
 
     @Override
-    protected Item recordStockTransaction(Item item, long quantity, ClockManager clockManager) {
+    protected void recordStockTransaction(Item item, long quantity, ClockManager clockManager) {
         item.recordStockTransaction(StockTransactionType.DECREASE, quantity, clockManager.getNowDateTime());
-        return item;
     }
 }

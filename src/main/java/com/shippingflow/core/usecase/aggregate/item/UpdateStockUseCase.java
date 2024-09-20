@@ -19,18 +19,18 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     @Override
     public Output execute(Input input) {
         Item foundItem = findItem(input.getItemId());
-        updateStock(foundItem, input.getQuantity());
-        return toOutput(foundItem);
+        Item updatedItem = updateStock(foundItem, input.getQuantity());
+        return toOutput(updatedItem);
     }
 
     private Item findItem(long itemId) {
         return itemReader.findItemById(itemId);
     }
 
-    private void updateStock(Item foundItem, long quantity) {
+    private Item updateStock(Item foundItem, long quantity) {
         updateStockQuantity(foundItem, quantity);
         recordStockTransaction(foundItem, quantity, clockManager);
-        persist(foundItem);
+        return persist(foundItem);
     }
 
     private Item persist(Item item) {
@@ -41,9 +41,9 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
         return Output.of(item.toVo());
     }
 
-    protected abstract Item updateStockQuantity(Item item, long quantity);
+    protected abstract void updateStockQuantity(Item item, long quantity);
 
-    protected abstract Item recordStockTransaction(Item item, long quantity, ClockManager clockManager);
+    protected abstract void recordStockTransaction(Item item, long quantity, ClockManager clockManager);
     @Value(staticConstructor = "of")
     public static class Input implements UseCase.Input {
 

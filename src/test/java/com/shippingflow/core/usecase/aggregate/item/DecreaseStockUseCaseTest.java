@@ -3,6 +3,7 @@ package com.shippingflow.core.usecase.aggregate.item;
 import com.shippingflow.core.aggregate.domain.item.component.ItemReader;
 import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
@@ -54,6 +55,14 @@ class DecreaseStockUseCaseTest {
 
         given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
         given(itemReader.findItemById(itemId)).willReturn(item);
+
+        Item updatedItem = Item.of(item.getId(), item.getName(), item.getPrice(), item.getDescription());
+        Stock updatedStock = Stock.builder().id(stock.getId()).quantity(stock.getQuantity() - decreaseQuantity).build();
+        StockTransaction recordedStockTransaction = StockTransaction.create(StockTransactionType.DECREASE, decreaseQuantity, transactionDateTime);
+        updatedStock.addTransaction(recordedStockTransaction);
+        updatedItem.bind(updatedStock);
+
+        given(itemWriter.update(any(Item.class))).willReturn(updatedItem);
 
         DecreaseStockUseCase.Input input = DecreaseStockUseCase.Input.of(itemId, decreaseQuantity);
 

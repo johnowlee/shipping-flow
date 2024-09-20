@@ -17,14 +17,12 @@ public class IncreaseStockUseCase extends UpdateStockUseCase {
     }
 
     @Override
-    protected Item updateStockQuantity(Item item, long quantity) {
+    protected void updateStockQuantity(Item item, long quantity) {
         item.increaseStock(quantity);
-        return item;
     }
 
     @Override
-    protected Item recordStockTransaction(Item item, long quantity, ClockManager clockManager) {
+    protected void recordStockTransaction(Item item, long quantity, ClockManager clockManager) {
         item.recordStockTransaction(StockTransactionType.INCREASE, quantity, clockManager.getNowDateTime());
-        return item;
     }
 }
