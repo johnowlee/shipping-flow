@@ -176,6 +176,23 @@ class StockTest {
                 );
     }
 
+    @DisplayName("Stock을 StockDto로 변환한다.")
+    @Test
+    void toDto() {
+        // given
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(1000L)
+                .build();
+
+        // when
+        StockDto actual = stock.toDto();
+
+        // then
+        assertThat(actual.id()).isEqualTo(1L);
+        assertThat(actual.quantity()).isEqualTo(1000L);
+    }
+
     private static Stock buildStock(long id, long quantity) {
         return Stock.builder().id(id).quantity(quantity).build();
     }

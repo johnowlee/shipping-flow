@@ -81,6 +81,10 @@ public class Stock {
         return new StockVo(this.id, this.quantity, stockTransactionVoList);
     }
 
+    public StockDto toDto() {
+        return StockDto.of(this.id, this.quantity);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

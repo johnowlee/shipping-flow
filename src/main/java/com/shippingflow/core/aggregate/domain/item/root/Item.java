@@ -95,6 +95,10 @@ public class Item {
         return item;
     }
 
+    public ItemDto toDto() {
+        return ItemDto.of(this.id, this.name, this.price, this.description);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
