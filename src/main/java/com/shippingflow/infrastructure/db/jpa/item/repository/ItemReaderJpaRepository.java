@@ -20,11 +20,6 @@ public class ItemReaderJpaRepository implements ItemReaderRepository {
     }
 
     @Override
-    public Optional<Item> findById(long itemId) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<ItemWithStockDto> findItemWithStockById(long itemId) {
         return Optional.empty();
     }

@@ -61,41 +61,6 @@ class ItemReaderTest {
         then(itemReaderRepository).should(times(1)).existsByName(eq("itemA"));
     }
 
-    @DisplayName("상품 ID로 상품을 조회한다.")
-    @Test
-    void findItemById() {
-        // given
-        long itemId = 1L;
-        Item item = Item.builder()
-                .id(itemId)
-                .name("itemA")
-                .description("this is itemA")
-                .build();
-        given(itemReaderRepository.findById(itemId)).willReturn(Optional.of(item));
-
-        // when
-        Item actual = itemReader.findItemById(itemId);
-
-        // then
-        assertThat(actual.getId()).isEqualTo(item.getId());
-        assertThat(actual.getName()).isEqualTo(item.getName());
-        assertThat(actual.getDescription()).isEqualTo(item.getDescription());
-        then(itemReaderRepository).should(times(1)).findById(eq(itemId));
-    }
-
-    @DisplayName("상품 ID로 조회 시 상품이 존재하지 않으면 예외가 발생한다.")
-    @Test
-    void findItemById_shouldThrowExceptionWhenItemDoesNotExist() {
-        // given
-        given(itemReaderRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        // when & then
-        Assertions.assertThatThrownBy(() -> itemReader.findItemById(1L))
-                        .isInstanceOf(DomainException.class)
-                        .hasMessage(ItemError.NOT_FOUND_ITEM.getMessage());
-        then(itemReaderRepository).should(times(1)).findById(eq(1L));
-    }
-
     @DisplayName("상품 ID로 상품과 재고를 조회한다.")
     @Test
     void getItemWithStockById() {

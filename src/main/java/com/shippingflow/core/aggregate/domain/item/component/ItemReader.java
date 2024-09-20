@@ -18,11 +18,6 @@ public class ItemReader {
         return itemReaderRepository.existsByName(name);
     }
 
-    public Item findItemById(long id) {
-        return itemReaderRepository.findById(id)
-                .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
-    }
-
     public Item getItemWithStockById(long id) {
         ItemWithStockDto dto = itemReaderRepository.findItemWithStockById(id)
                 .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
