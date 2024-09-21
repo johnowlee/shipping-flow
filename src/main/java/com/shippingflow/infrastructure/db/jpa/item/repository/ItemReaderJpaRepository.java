@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item.repository;
 
 import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +19,7 @@ public class ItemReaderJpaRepository implements ItemReaderRepository {
     }
 
     @Override
-    public Optional<Item> findById(long itemId) {
+    public Optional<ItemWithStockDto> findItemWithStockById(long itemId) {
         return Optional.empty();
     }
 }

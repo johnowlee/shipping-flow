@@ -1,5 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.local;
 
+import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
 import com.shippingflow.core.aggregate.vo.StockTransactionVo;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,6 +43,14 @@ public class StockTransaction {
 
     public StockTransactionVo toVo() {
         return new StockTransactionVo(this.id, this.quantity, this.transactionType, this.transactionDateTime);
+    }
+
+    public static StockTransaction from(StockTransactionDto dto) {
+        return new StockTransaction(dto.id(), dto.quantity(), dto.transactionType(), dto.transactionDateTime());
+    }
+
+    public StockTransactionDto toDto() {
+        return StockTransactionDto.of(this.id, this.quantity, this.transactionType, this.transactionDateTime);
     }
 
     @Override

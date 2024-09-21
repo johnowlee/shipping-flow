@@ -1,11 +1,11 @@
 package com.shippingflow.core.aggregate.domain.item.repository;
 
-import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 
 import java.util.Optional;
 
 public interface ItemReaderRepository {
     boolean existsByName(String name);
 
-    Optional<Item> findById(long itemId);
+    Optional<ItemWithStockDto> findItemWithStockById(long itemId);
 }

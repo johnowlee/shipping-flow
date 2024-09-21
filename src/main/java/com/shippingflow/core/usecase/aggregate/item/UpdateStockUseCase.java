@@ -1,12 +1,11 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.aggregate.domain.item.component.ItemReader;
+import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.exception.DomainException;
-import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.UseCase;
-import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -14,48 +13,48 @@ import lombok.Value;
 @RequiredArgsConstructor
 public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Input, UpdateStockUseCase.Output> {
 
-    private final ItemReaderRepository itemReaderRepository;
-    private final ItemWriterRepository itemWriterRepository;
+    private final ItemReader itemReader;
+    private final ItemWriter itemWriter;
     private final ClockManager clockManager;
 
     @Override
     public Output execute(Input input) {
         Item foundItem = findItem(input.getItemId());
-        updateStock(foundItem, input.getQuantity());
-        return toOutput(foundItem);
+        Item updatedItem = updateStock(foundItem, input.getQuantity());
+        return toOutput(updatedItem);
     }
 
     private Item findItem(long itemId) {
-        return itemReaderRepository.findById(itemId)
-                .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
+        return itemReader.getItemWithStockById(itemId);
     }
 
-    private void updateStock(Item foundItem, long quantity) {
-        updateStockQuantity(foundItem, quantity);
-        recordStockTransaction(foundItem, quantity, clockManager);
-        persist(foundItem);
+    private Item updateStock(Item item, long quantity) {
+        updateStockQuantity(item, quantity);
+        recordStockTransaction(item, quantity, clockManager);
+        return persist(item);
     }
 
     private Item persist(Item item) {
-        return itemWriterRepository.update(item.toVo());
+        return itemWriter.updateStock(item);
     }
 
     private static Output toOutput(Item item) {
-        return Output.of(item.toVo());
+        return Output.of(item.toDto(), item.getStock().toDto());
     }
 
-    protected abstract Item updateStockQuantity(Item item, long quantity);
+    protected abstract void updateStockQuantity(Item item, long quantity);
 
-    protected abstract Item recordStockTransaction(Item item, long quantity, ClockManager clockManager);
+    protected abstract void recordStockTransaction(Item item, long quantity, ClockManager clockManager);
+
     @Value(staticConstructor = "of")
     public static class Input implements UseCase.Input {
-
         long itemId;
         long quantity;
     }
 
     @Value(staticConstructor = "of")
     public static class Output implements UseCase.Output {
-        ItemVo item;
+        ItemDto item;
+        StockDto stock;
     }
 }

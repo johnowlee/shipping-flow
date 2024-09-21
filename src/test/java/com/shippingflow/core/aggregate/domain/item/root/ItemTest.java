@@ -1,11 +1,15 @@
 package com.shippingflow.core.aggregate.domain.item.root;
 
+import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
-import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
@@ -110,7 +115,7 @@ class ItemTest {
         Item item = buildItem(1L, "itemA", 1000L, "this is ItemA");
 
         // when & then
-        Assertions.assertThatThrownBy(() -> item.decreaseStock(500L))
+        assertThatThrownBy(() -> item.decreaseStock(500L))
                         .isInstanceOf(DomainException.class)
                         .hasMessage(ItemError.STOCK_SHORTAGE.getMessage());
     }
@@ -131,6 +136,173 @@ class ItemTest {
 
         // then
         then(stock).should(times(1)).recordTransaction(eq(transactionType), eq(quantity), eq(transactionDateTime));
+    }
+
+    @DisplayName("ItemDto를 Item으로 변환한다.")
+    @Test
+    void fromItemDto() {
+        // given
+        long id = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(id, name, price, description);
+
+        // when
+        Item actual = Item.from(itemDto);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(id);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+    }
+
+    @DisplayName("ItemWithStockDto를 Stock이 포함된 Item으로 변환한다.")
+    @Test
+    void fromItemWithStockDto_shouldReturnWithStockWhenStockIsNotNull() {
+        // given
+        long itemId = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(itemId, name, price, description);
+
+        long stockId = 1L;
+        long quantity = 1000L;
+        StockDto stockDto = new StockDto(stockId, quantity);
+
+        ItemWithStockDto itemWithStockDto = new ItemWithStockDto(itemDto, stockDto);
+
+        // when
+        Item actual = Item.from(itemWithStockDto);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(itemId);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+        assertThat(actual.getStock().getId()).isEqualTo(stockId);
+        assertThat(actual.getStock().getQuantity()).isEqualTo(quantity);
+    }
+
+    @DisplayName("ItemWithStockDto에서 StockDto가 null이면 Item만 변환한다.")
+    @Test
+    void fromItemWithStockDto_shouldReturnWithoutStockWhenStockIsNull() {
+        // given
+        long itemId = 1L;
+        String name = "itemA";
+        long price = 1000L;
+        String description = "description";
+        ItemDto itemDto = new ItemDto(itemId, name, price, description);
+
+        StockDto stockDto = null;
+
+        ItemWithStockDto itemWithStockDto = new ItemWithStockDto(itemDto, stockDto);
+
+        // when
+        Item actual = Item.from(itemWithStockDto);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(itemId);
+        assertThat(actual.getName()).isEqualTo(name);
+        assertThat(actual.getPrice()).isEqualTo(price);
+        assertThat(actual.getDescription()).isEqualTo(description);
+        assertThat(actual.getStock()).isNull();
+    }
+
+    @DisplayName("Item을 ItemDto로 변환한다.")
+    @Test
+    void toDto() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(1000L)
+                .build();
+
+        // when
+        ItemDto actual = item.toDto();
+
+        // then
+        assertThat(actual.id()).isEqualTo(1L);
+        assertThat(actual.name()).isEqualTo("itemA");
+        assertThat(actual.price()).isEqualTo(1000L);
+    }
+
+    @DisplayName("Item을 ItemWithStockDto로 변환한다.")
+    @Test
+    void toWithStockDto() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(10_000L)
+                .build();
+
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(2000L)
+                .build();
+
+        item.bind(stock);
+
+        // when
+        ItemWithStockDto actual = item.toWithStockDto();
+
+        // then
+        assertThat(actual.item().id()).isEqualTo(item.getId());
+        assertThat(actual.item().name()).isEqualTo(item.getName());
+        assertThat(actual.item().price()).isEqualTo(item.getPrice());
+        assertThat(actual.stock().id()).isEqualTo(stock.getId());
+        assertThat(actual.stock().quantity()).isEqualTo(stock.getQuantity());
+    }
+
+    @DisplayName("Item을 ItemAggregateDto로 변환한다.")
+    @Test
+    void toAggregateDto() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(10_000L)
+                .build();
+
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(2000L)
+                .build();
+
+        LocalDateTime transactionDateTime = LocalDateTime.now();
+        StockTransaction stockTransaction = StockTransaction.builder()
+                .id(1L)
+                .transactionType(StockTransactionType.INCREASE)
+                .quantity(1000L)
+                .transactionDateTime(transactionDateTime)
+                .build();
+
+        stock.addTransaction(stockTransaction);
+        item.bind(stock);
+
+        // when
+        ItemAggregateDto actual = item.toAggregateDto();
+
+        // then
+        assertThat(actual.item().id()).isEqualTo(item.getId());
+        assertThat(actual.item().name()).isEqualTo(item.getName());
+        assertThat(actual.item().price()).isEqualTo(item.getPrice());
+        assertThat(actual.stock().id()).isEqualTo(stock.getId());
+        assertThat(actual.stock().quantity()).isEqualTo(stock.getQuantity());
+        assertThat(actual.transactions()).hasSize(1)
+                .extracting("id", "transactionType", "quantity", "transactionDateTime")
+                .contains(
+                        Tuple.tuple(
+                                stockTransaction.getId(),
+                                stockTransaction.getTransactionType(),
+                                stockTransaction.getQuantity(),
+                                stockTransaction.getTransactionDateTime()
+                        )
+                );
     }
 
     private Item buildItem(Long id, String name, Long price, String description) {

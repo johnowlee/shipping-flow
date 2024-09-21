@@ -1,15 +1,14 @@
-package com.shippingflow.core.usecase.item;
+package com.shippingflow.core.usecase.aggregate.item;
 
 import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
+import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
-import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
-import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.usecase.common.ClockManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ import static org.mockito.BDDMockito.*;
 class CreateItemUseCaseTest {
 
     @Mock
-    ItemWriterRepository itemWriterRepository;
+    ItemWriter itemWriter;
 
     @Mock
     ItemValidator itemValidator;
@@ -55,8 +54,6 @@ class CreateItemUseCaseTest {
         createdItem.bind(createdStock);
         createdItem.recordStockTransaction(StockTransactionType.INCREASE, quantity, transactionDateTime);
 
-        ItemVo createdItemVo = createdItem.toVo();
-
         Item savedItem = Item.builder()
                 .id(1L)
                 .name(name)
@@ -80,7 +77,7 @@ class CreateItemUseCaseTest {
         savedItem.bind(savedStock);
 
         willDoNothing().given(itemValidator).validateItemNameDuplication(name);
-        given(itemWriterRepository.save(createdItemVo)).willReturn(savedItem);
+        given(itemWriter.save(createdItem)).willReturn(savedItem);
 
         // when
         CreateItemUseCase.Output output = createItemUseCase.execute(input);
