@@ -3,8 +3,6 @@ package com.shippingflow.core.aggregate.domain.item.root;
 import com.shippingflow.core.aggregate.domain.item.dto.*;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.vo.ItemVo;
-import com.shippingflow.core.aggregate.vo.StockVo;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import lombok.Builder;
@@ -66,11 +64,6 @@ public class Item {
 
     public void recordStockTransaction(StockTransactionType transactionType, long quantity, LocalDateTime transactionDateTime) {
         stock.recordTransaction(transactionType, quantity, transactionDateTime);
-    }
-
-    public ItemVo toVo() {
-        StockVo stockVo = this.stock != null ? this.stock.toVo() : null;
-        return new ItemVo(this.id, this.name, this.price, this.description, stockVo);
     }
 
     public static Item from(ItemDto dto) {

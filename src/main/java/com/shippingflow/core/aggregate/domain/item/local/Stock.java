@@ -3,8 +3,6 @@ package com.shippingflow.core.aggregate.domain.item.local;
 import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
 import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.aggregate.vo.StockTransactionVo;
-import com.shippingflow.core.aggregate.vo.StockVo;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import lombok.Builder;
@@ -30,10 +28,6 @@ public class Stock {
 
     public static Stock create(long quantity) {
         return builder().quantity(quantity).build();
-    }
-
-    public static Stock of(Long id, long quantity) {
-        return Stock.builder().id(id).quantity(quantity).build();
     }
 
     public static Stock from(StockDto dto) {
@@ -74,21 +68,14 @@ public class Stock {
                 .forEach(this::addTransaction);
     }
 
-    public StockVo toVo() {
-        List<StockTransactionVo> stockTransactionVoList = this.transactions.stream()
-                .map(StockTransaction::toVo)
-                .toList();
-        return new StockVo(this.id, this.quantity, stockTransactionVoList);
+    public StockDto toDto() {
+        return StockDto.of(this.id, this.quantity);
     }
 
     public List<StockTransactionDto> transactionsToDtoList() {
         return this.getTransactions().stream()
                 .map(StockTransaction::toDto)
                 .toList();
-    }
-
-    public StockDto toDto() {
-        return StockDto.of(this.id, this.quantity);
     }
 
     @Override
@@ -102,5 +89,9 @@ public class Stock {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    private static Stock of(Long id, long quantity) {
+        return Stock.builder().id(id).quantity(quantity).build();
     }
 }

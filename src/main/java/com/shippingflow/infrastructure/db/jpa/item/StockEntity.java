@@ -44,10 +44,6 @@ public class StockEntity {
         return of(stockDto.id(), stockDto.quantity());
     }
 
-    public Stock toDomain() {
-        return Stock.of(this.id, this.quantity);
-    }
-
     public StockDto toStockDto() {
         return StockDto.of(this.id, this.quantity);
     }
