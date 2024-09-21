@@ -1,8 +1,7 @@
-package com.shippingflow.infrastructure.db.jpa.stock;
+package com.shippingflow.infrastructure.db.jpa.item;
 
-import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
+import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.vo.StockTransactionVo;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,18 +38,16 @@ public class StockTransactionEntity {
         this.transactionDateTime = transactionDateTime;
     }
 
-    public static StockTransactionEntity create(StockTransactionVo transactionVo) {
-        return of(null, transactionVo.quantity(), transactionVo.transactionType(), transactionVo.transactionDateTime());
+    public static StockTransactionEntity createFrom(StockTransactionDto stockTransactionDto) {
+        return create(stockTransactionDto.quantity(), stockTransactionDto.transactionType(), stockTransactionDto.transactionDateTime());
     }
 
-    public StockTransaction toDomain() {
-        return StockTransaction.of(
-                this.id,
-//                this.stock.toDomain(),
-                this.quantity,
-                this.transactionType,
-                this.transactionDateTime
-        );
+    public void bindTo(StockEntity stockEntity) {
+        this.stock = stockEntity;
+    }
+
+    private static StockTransactionEntity create(long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        return of(null, quantity, transactionType, transactionDateTime);
     }
 
     private static StockTransactionEntity of(Long id, long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
