@@ -81,6 +81,12 @@ public class Stock {
         return new StockVo(this.id, this.quantity, stockTransactionVoList);
     }
 
+    public List<StockTransactionDto> transactionsToDtoList() {
+        return this.getTransactions().stream()
+                .map(StockTransaction::toDto)
+                .toList();
+    }
+
     public StockDto toDto() {
         return StockDto.of(this.id, this.quantity);
     }

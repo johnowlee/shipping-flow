@@ -1,12 +1,15 @@
 package com.shippingflow.core.aggregate.domain.item.root;
 
+import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
 import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
 import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -225,6 +228,81 @@ class ItemTest {
         assertThat(actual.id()).isEqualTo(1L);
         assertThat(actual.name()).isEqualTo("itemA");
         assertThat(actual.price()).isEqualTo(1000L);
+    }
+
+    @DisplayName("Item을 ItemWithStockDto로 변환한다.")
+    @Test
+    void toWithStockDto() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(10_000L)
+                .build();
+
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(2000L)
+                .build();
+
+        item.bind(stock);
+
+        // when
+        ItemWithStockDto actual = item.toWithStockDto();
+
+        // then
+        assertThat(actual.item().id()).isEqualTo(item.getId());
+        assertThat(actual.item().name()).isEqualTo(item.getName());
+        assertThat(actual.item().price()).isEqualTo(item.getPrice());
+        assertThat(actual.stock().id()).isEqualTo(stock.getId());
+        assertThat(actual.stock().quantity()).isEqualTo(stock.getQuantity());
+    }
+
+    @DisplayName("Item을 ItemAggregateDto로 변환한다.")
+    @Test
+    void toAggregateDto() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(10_000L)
+                .build();
+
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(2000L)
+                .build();
+
+        LocalDateTime transactionDateTime = LocalDateTime.now();
+        StockTransaction stockTransaction = StockTransaction.builder()
+                .id(1L)
+                .transactionType(StockTransactionType.INCREASE)
+                .quantity(1000L)
+                .transactionDateTime(transactionDateTime)
+                .build();
+
+        stock.addTransaction(stockTransaction);
+        item.bind(stock);
+
+        // when
+        ItemAggregateDto actual = item.toAggregateDto();
+
+        // then
+        assertThat(actual.item().id()).isEqualTo(item.getId());
+        assertThat(actual.item().name()).isEqualTo(item.getName());
+        assertThat(actual.item().price()).isEqualTo(item.getPrice());
+        assertThat(actual.stock().id()).isEqualTo(stock.getId());
+        assertThat(actual.stock().quantity()).isEqualTo(stock.getQuantity());
+        assertThat(actual.transactions()).hasSize(1)
+                .extracting("id", "transactionType", "quantity", "transactionDateTime")
+                .contains(
+                        Tuple.tuple(
+                                stockTransaction.getId(),
+                                stockTransaction.getTransactionType(),
+                                stockTransaction.getQuantity(),
+                                stockTransaction.getTransactionDateTime()
+                        )
+                );
     }
 
     private Item buildItem(Long id, String name, Long price, String description) {

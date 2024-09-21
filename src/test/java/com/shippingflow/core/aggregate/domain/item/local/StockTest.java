@@ -193,6 +193,31 @@ class StockTest {
         assertThat(actual.quantity()).isEqualTo(1000L);
     }
 
+    @DisplayName("StockTransactions를 StockTransactionDtoList로 변환한다.")
+    @Test
+    void transactionsToDtoList() {
+        // given
+        Stock stock = Stock.builder().id(1L).build();
+
+        long transactionId = 1L;
+        long quantity = 1000L;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 20, 23, 30);
+        StockTransaction stockTransaction = StockTransaction.of(transactionId, quantity, transactionType, transactionDateTime);
+
+        stock.addTransaction(stockTransaction);
+
+        // when
+        List<StockTransactionDto> actual = stock.transactionsToDtoList();
+
+        // then
+        assertThat(actual).hasSize(1)
+                .extracting("id", "transactionType", "quantity", "transactionDateTime")
+                .contains(
+                        tuple(transactionId, transactionType, quantity, transactionDateTime)
+                );
+    }
+
     private static Stock buildStock(long id, long quantity) {
         return Stock.builder().id(id).quantity(quantity).build();
     }

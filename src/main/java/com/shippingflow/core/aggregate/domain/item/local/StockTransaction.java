@@ -49,6 +49,10 @@ public class StockTransaction {
         return new StockTransaction(dto.id(), dto.quantity(), dto.transactionType(), dto.transactionDateTime());
     }
 
+    public StockTransactionDto toDto() {
+        return StockTransactionDto.of(this.id, this.quantity, this.transactionType, this.transactionDateTime);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

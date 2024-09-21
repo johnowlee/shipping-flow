@@ -1,10 +1,10 @@
 package com.shippingflow.core.aggregate.domain.item.root;
 
+import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
-import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
-import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.vo.ItemVo;
 import com.shippingflow.core.aggregate.vo.StockVo;
 import com.shippingflow.core.exception.DomainException;
@@ -97,6 +97,14 @@ public class Item {
 
     public ItemDto toDto() {
         return ItemDto.of(this.id, this.name, this.price, this.description);
+    }
+
+    public ItemWithStockDto toWithStockDto() {
+        return ItemWithStockDto.of(this.toDto(), this.stock.toDto());
+    }
+
+    public ItemAggregateDto toAggregateDto() {
+        return ItemAggregateDto.of(this.toDto(), this.stock.toDto(), this.stock.transactionsToDtoList());
     }
 
     @Override

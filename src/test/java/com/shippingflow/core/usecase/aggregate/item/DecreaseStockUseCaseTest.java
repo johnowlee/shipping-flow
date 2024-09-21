@@ -61,7 +61,7 @@ class DecreaseStockUseCaseTest {
         updatedStock.addTransaction(recordedStockTransaction);
         updatedItem.bind(updatedStock);
 
-        given(itemWriter.update(any(Item.class))).willReturn(updatedItem);
+        given(itemWriter.updateStock(any(Item.class))).willReturn(updatedItem);
 
         DecreaseStockUseCase.Input input = DecreaseStockUseCase.Input.of(itemId, decreaseQuantity);
 
@@ -71,7 +71,7 @@ class DecreaseStockUseCaseTest {
         // then
         assertThat(output.getStock().quantity()).isEqualTo(300L - 50L);
 
-        then(itemWriter).should(times(1)).update(any(Item.class));
+        then(itemWriter).should(times(1)).updateStock(any(Item.class));
     }
 
     @DisplayName("재고 감소 시 보유 수량이 부족하면 예외가 발생한다.")

@@ -1,5 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,8 @@ public class ItemWriter {
         return itemWriterRepository.save(item.toVo());
     }
 
-    public Item update(Item item) {
-        return itemWriterRepository.update(item.toVo());
+    public Item updateStock(Item item) {
+        ItemWithStockDto itemWithStockDto = itemWriterRepository.updateStock(item.toAggregateDto());
+        return Item.from(itemWithStockDto);
     }
 }

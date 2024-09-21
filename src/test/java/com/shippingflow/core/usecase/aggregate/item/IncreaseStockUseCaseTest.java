@@ -61,7 +61,7 @@ class IncreaseStockUseCaseTest {
 
         given(itemReader.getItemWithStockById(itemId)).willReturn(item);
         given(clockManager.getNowDateTime()).willReturn(transactionDateTime);
-        given(itemWriter.update(increasedItem)).willReturn(increasedItem);
+        given(itemWriter.updateStock(increasedItem)).willReturn(increasedItem);
 
         // when
         UpdateStockUseCase.Output output = increaseStockUseCase.execute(input);
@@ -71,7 +71,7 @@ class IncreaseStockUseCaseTest {
         assertThat(output.getStock().quantity()).isEqualTo(50L);
 
         then(itemReader).should(times(1)).getItemWithStockById(itemId);
-        then(itemWriter).should(times(1)).update(item);
+        then(itemWriter).should(times(1)).updateStock(item);
     }
 
     @DisplayName("상품 조회시 존재하지 않으면 예외가 발생한다.")

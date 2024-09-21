@@ -39,6 +39,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
 
     @Value(staticConstructor = "of")
     public static class Output implements UseCase.Output {
+        // TODO: DTO로 변경. VO 삭제?
         ItemVo item;
     }
 

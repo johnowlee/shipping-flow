@@ -1,5 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item.repository;
 
+import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
+import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.aggregate.vo.ItemVo;
@@ -20,8 +22,9 @@ public class ItemWriterJpaRepository implements ItemWriterRepository {
     }
 
     @Override
-    public Item update(ItemVo itemVo) {
-        ItemEntity itemEntity = ItemEntity.createFrom(itemVo);
-        return itemJpaRepository.save(itemEntity).toDomain();
+    public ItemWithStockDto updateStock(ItemAggregateDto itemAggregateDto) {
+//        ItemEntity itemEntity = ItemEntity.createFrom(itemVo);
+//        return itemJpaRepository.save(itemEntity).toDomain();
+        return null;
     }
 }

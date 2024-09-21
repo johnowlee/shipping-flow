@@ -35,7 +35,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     }
 
     private Item persist(Item item) {
-        return itemWriter.update(item);
+        return itemWriter.updateStock(item);
     }
 
     private static Output toOutput(Item item) {

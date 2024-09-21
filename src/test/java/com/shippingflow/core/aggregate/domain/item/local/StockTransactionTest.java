@@ -45,4 +45,24 @@ class StockTransactionTest {
         assertThat(actual.getTransactionType()).isEqualTo(transactionType);
         assertThat(actual.getTransactionDateTime()).isEqualTo(transactionDateTime);
     }
+
+    @DisplayName("StockTransaction을 StockTransactionDto로 변환한다.")
+    @Test
+    void toDto() {
+        // given
+        long transactionId = 1L;
+        long quantity = 1000L;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 20, 23, 30);
+        StockTransaction stockTransaction = StockTransaction.of(transactionId, quantity, transactionType, transactionDateTime);
+
+        // when
+        StockTransactionDto actual = stockTransaction.toDto();
+
+        // then
+        assertThat(actual.id()).isEqualTo(transactionId);
+        assertThat(actual.quantity()).isEqualTo(quantity);
+        assertThat(actual.transactionType()).isEqualTo(transactionType);
+        assertThat(actual.transactionDateTime()).isEqualTo(transactionDateTime);
+    }
 }

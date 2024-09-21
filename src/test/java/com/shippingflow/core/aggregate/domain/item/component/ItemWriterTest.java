@@ -1,5 +1,9 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
+import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
+import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
+import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
 import com.shippingflow.core.aggregate.vo.ItemVo;
@@ -9,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,30 +50,39 @@ class ItemWriterTest {
         assertThat(actual.getPrice()).isEqualTo(1000L);
     }
 
-    @DisplayName("상품을 수정한다.")
+    @DisplayName("상품의 재고를 수정한다.")
     @Test
-    void update() {
+    void updateStock() {
         // given
         Item item = Item.builder()
                 .id(1L)
                 .name("itemA")
                 .price(1000L)
                 .build();
-
-        Item updatingItem = Item.builder()
-                .id(item.getId())
-                .name("itemB")
-                .price(1500L)
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(1000L)
                 .build();
 
-        given(itemWriterRepository.update(updatingItem.toVo())).willReturn(updatingItem);
+        StockTransaction stockTransaction = StockTransaction.builder()
+                .id(1L)
+                .quantity(500L)
+                .transactionType(StockTransactionType.INCREASE)
+                .transactionDateTime(LocalDateTime.now())
+                .build();
+        stock.addTransaction(stockTransaction);
+        item.bind(stock);
+
+        given(itemWriterRepository.updateStock(any(ItemAggregateDto.class))).willReturn(item.toWithStockDto());
 
         // when
-        Item actual = itemWriter.update(updatingItem);
+        Item actual = itemWriter.updateStock(item);
 
         // then
         assertThat(actual.getId()).isEqualTo(1L);
-        assertThat(actual.getName()).isEqualTo("itemB");
-        assertThat(actual.getPrice()).isEqualTo(1500L);
+        assertThat(actual.getName()).isEqualTo("itemA");
+        assertThat(actual.getPrice()).isEqualTo(1000L);
+        assertThat(actual.getStock().getId()).isEqualTo(1L);
+        assertThat(actual.getStock().getQuantity()).isEqualTo(1000L);
     }
 }
