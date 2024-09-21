@@ -1,12 +1,12 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
-import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.aggregate.vo.ItemVo;
+import com.shippingflow.core.domain.aggregate.item.component.ItemValidator;
+import com.shippingflow.core.domain.aggregate.item.component.ItemWriter;
+import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
+import com.shippingflow.core.domain.aggregate.item.model.local.Stock;
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransaction;
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
+import com.shippingflow.core.domain.aggregate.item.model.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.common.ClockManager;
@@ -19,7 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,18 +84,13 @@ class CreateItemUseCaseTest {
         CreateItemUseCase.Output output = createItemUseCase.execute(input);
 
         // then
-        ItemVo savedItemVo = output.getItem();
-        assertThat(savedItemVo.id()).isEqualTo(savedItem.getId());
-        assertThat(savedItemVo.name()).isEqualTo(savedItem.getName());
-        assertThat(savedItemVo.description()).isEqualTo(savedItem.getDescription());
-        assertThat(savedItemVo.price()).isEqualTo(savedItem.getPrice());
-        assertThat(savedItemVo.stock()).isEqualTo(savedStock.toVo());
-        assertThat(savedItemVo.stock().quantity()).isEqualTo(quantity);
-        assertThat(savedItemVo.stock().transactions()).hasSize(1)
-                .extracting("quantity", "transactionType", "transactionDateTime")
-                .contains(
-                        tuple(1000L, StockTransactionType.INCREASE, transactionDateTime)
-                );
+        ItemWithStockDto itemWithStockDto = output.getItemWithStockDto();
+        assertThat(itemWithStockDto.item().id()).isEqualTo(savedItem.getId());
+        assertThat(itemWithStockDto.item().name()).isEqualTo(savedItem.getName());
+        assertThat(itemWithStockDto.item().description()).isEqualTo(savedItem.getDescription());
+        assertThat(itemWithStockDto.item().price()).isEqualTo(savedItem.getPrice());
+        assertThat(itemWithStockDto.stock()).isEqualTo(savedStock.toDto());
+        assertThat(itemWithStockDto.stock().quantity()).isEqualTo(quantity);
     }
 
     @DisplayName("신규 상품을 등록할때 중복된 상품 이름이 있으면 예외가 발생한다.")

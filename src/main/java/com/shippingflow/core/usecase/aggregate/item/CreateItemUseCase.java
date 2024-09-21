@@ -1,11 +1,11 @@
 package com.shippingflow.core.usecase.aggregate.item;
 
-import com.shippingflow.core.aggregate.domain.item.component.ItemValidator;
-import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.aggregate.vo.ItemVo;
+import com.shippingflow.core.domain.aggregate.item.component.ItemValidator;
+import com.shippingflow.core.domain.aggregate.item.component.ItemWriter;
+import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
+import com.shippingflow.core.domain.aggregate.item.model.local.Stock;
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
+import com.shippingflow.core.domain.aggregate.item.model.root.Item;
 import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.usecase.common.ClockManager;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     public Output execute(Input input) {
         itemValidator.validateItemNameDuplication(input.name);
         Item item = itemWriter.save(createItemFrom(input));
-        return Output.of(item.toVo());
+        return Output.of(item.toItemWithStockDto());
     }
 
     @Value(staticConstructor = "of")
@@ -39,8 +39,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
 
     @Value(staticConstructor = "of")
     public static class Output implements UseCase.Output {
-        // TODO: DTO로 변경. VO 삭제?
-        ItemVo item;
+        ItemWithStockDto itemWithStockDto;
     }
 
     private Item createItemFrom(Input input) {

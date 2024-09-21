@@ -1,7 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item;
 
-import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

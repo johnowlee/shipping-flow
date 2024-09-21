@@ -1,8 +1,7 @@
 package com.shippingflow.infrastructure.db.jpa.item;
 
-import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
-import com.shippingflow.core.aggregate.domain.item.dto.StockTransactionDto;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
+import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
+import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,10 +41,6 @@ public class StockEntity {
 
     public static StockEntity buildFrom(StockDto stockDto) {
         return of(stockDto.id(), stockDto.quantity());
-    }
-
-    public Stock toDomain() {
-        return Stock.of(this.id, this.quantity);
     }
 
     public StockDto toStockDto() {
