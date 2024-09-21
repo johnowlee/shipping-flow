@@ -23,8 +23,7 @@ public class ItemWriterJpaRepository implements ItemWriterRepository {
 
     @Override
     public ItemWithStockDto updateStock(ItemAggregateDto itemAggregateDto) {
-//        ItemEntity itemEntity = ItemEntity.createFrom(itemVo);
-//        return itemJpaRepository.save(itemEntity).toDomain();
-        return null;
+        ItemEntity itemEntity = ItemEntity.buildFrom(itemAggregateDto);
+        return itemJpaRepository.save(itemEntity).toItemWithStockDto();
     }
 }

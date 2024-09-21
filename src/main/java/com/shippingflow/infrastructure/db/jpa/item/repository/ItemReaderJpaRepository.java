@@ -2,6 +2,7 @@ package com.shippingflow.infrastructure.db.jpa.item.repository;
 
 import com.shippingflow.core.aggregate.domain.item.repository.ItemReaderRepository;
 import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
+import com.shippingflow.infrastructure.db.jpa.item.ItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,7 @@ public class ItemReaderJpaRepository implements ItemReaderRepository {
 
     @Override
     public Optional<ItemWithStockDto> findItemWithStockById(long itemId) {
-        return Optional.empty();
+       return itemJpaRepository.findById(itemId)
+               .map(ItemEntity::toItemWithStockDto);
     }
 }
