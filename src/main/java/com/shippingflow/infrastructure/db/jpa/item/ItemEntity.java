@@ -1,6 +1,6 @@
 package com.shippingflow.infrastructure.db.jpa.item;
 
-import com.shippingflow.core.aggregate.domain.item.dto.*;
+import com.shippingflow.core.domain.aggregate.item.dto.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

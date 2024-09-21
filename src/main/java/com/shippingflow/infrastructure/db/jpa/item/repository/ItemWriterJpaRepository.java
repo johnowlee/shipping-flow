@@ -1,8 +1,8 @@
 package com.shippingflow.infrastructure.db.jpa.item.repository;
 
-import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
-import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
-import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
+import com.shippingflow.core.domain.aggregate.item.dto.ItemAggregateDto;
+import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
+import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
 import com.shippingflow.infrastructure.db.jpa.item.ItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
