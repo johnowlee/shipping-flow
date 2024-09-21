@@ -1,8 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.root;
 
-import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
-import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
-import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
+import com.shippingflow.core.aggregate.domain.item.dto.*;
 import com.shippingflow.core.aggregate.domain.item.local.Stock;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 import com.shippingflow.core.aggregate.vo.ItemVo;
@@ -13,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -51,7 +50,7 @@ public class Item {
     }
 
     public void increaseStock(long quantity) {
-        if (isStockNull()) {
+        if (isStockAbsent()) {
             initializeStock(quantity);
             return;
         }
@@ -59,7 +58,7 @@ public class Item {
     }
 
     public void decreaseStock(long quantity) {
-        if (isStockNull()) {
+        if (isStockAbsent()) {
             throw DomainException.from(ItemError.STOCK_SHORTAGE);
         }
         this.stock.decrease(quantity);
@@ -99,12 +98,17 @@ public class Item {
         return ItemDto.of(this.id, this.name, this.price, this.description);
     }
 
-    public ItemWithStockDto toWithStockDto() {
-        return ItemWithStockDto.of(this.toDto(), this.stock.toDto());
+    public ItemWithStockDto toItemWithStockDto() {
+        ItemDto itemDto = this.toDto();
+        StockDto stockDto = isStockPresent() ? this.stock.toDto() : null;
+        return ItemWithStockDto.of(itemDto, stockDto);
     }
 
-    public ItemAggregateDto toAggregateDto() {
-        return ItemAggregateDto.of(this.toDto(), this.stock.toDto(), this.stock.transactionsToDtoList());
+    public ItemAggregateDto toItemAggregateDto() {
+        ItemDto itemDto = this.toDto();
+        StockDto stockDto = isStockPresent() ? this.stock.toDto() : null;
+        List<StockTransactionDto> stockTransactionDto = isStockPresent() ? this.stock.transactionsToDtoList() : null;
+        return ItemAggregateDto.of(itemDto, stockDto, stockTransactionDto);
     }
 
     @Override
@@ -125,7 +129,11 @@ public class Item {
         bind(this.stock);
     }
 
-    private boolean isStockNull() {
+    private boolean isStockAbsent() {
         return this.stock == null;
+    }
+
+    private boolean isStockPresent() {
+        return !this.isStockAbsent();
     }
 }

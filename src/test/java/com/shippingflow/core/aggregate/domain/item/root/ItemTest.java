@@ -248,7 +248,7 @@ class ItemTest {
         item.bind(stock);
 
         // when
-        ItemWithStockDto actual = item.toWithStockDto();
+        ItemWithStockDto actual = item.toItemWithStockDto();
 
         // then
         assertThat(actual.item().id()).isEqualTo(item.getId());
@@ -285,7 +285,7 @@ class ItemTest {
         item.bind(stock);
 
         // when
-        ItemAggregateDto actual = item.toAggregateDto();
+        ItemAggregateDto actual = item.toItemAggregateDto();
 
         // then
         assertThat(actual.item().id()).isEqualTo(item.getId());

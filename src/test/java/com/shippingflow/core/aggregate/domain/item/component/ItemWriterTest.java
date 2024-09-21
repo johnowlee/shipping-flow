@@ -6,7 +6,6 @@ import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
 import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
 import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
 import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.aggregate.vo.ItemVo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +38,7 @@ class ItemWriterTest {
                 .price(1000L)
                 .build();
 
-        given(itemWriterRepository.save(any(ItemVo.class))).willReturn(item);
+        given(itemWriterRepository.save(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
         Item actual = itemWriter.save(item);
@@ -48,6 +47,35 @@ class ItemWriterTest {
         assertThat(actual.getId()).isEqualTo(1L);
         assertThat(actual.getName()).isEqualTo("itemA");
         assertThat(actual.getPrice()).isEqualTo(1000L);
+    }
+
+    @DisplayName("상품과 재고를 함께 저장한다.")
+    @Test
+    void saveWithStockAndIncreaseTransaction() {
+        // given
+        Item item = Item.builder()
+                .id(1L)
+                .name("itemA")
+                .price(1000L)
+                .build();
+
+        Stock stock = Stock.builder()
+                .id(1L)
+                .quantity(5000L)
+                .build();
+        item.bind(stock);
+
+        given(itemWriterRepository.save(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
+
+        // when
+        Item actual = itemWriter.save(item);
+
+        // then
+        assertThat(actual.getId()).isEqualTo(1L);
+        assertThat(actual.getName()).isEqualTo("itemA");
+        assertThat(actual.getPrice()).isEqualTo(1000L);
+        assertThat(actual.getStock().getId()).isEqualTo(1L);
+        assertThat(actual.getStock().getQuantity()).isEqualTo(5000L);
     }
 
     @DisplayName("상품의 재고를 수정한다.")
@@ -73,7 +101,7 @@ class ItemWriterTest {
         stock.addTransaction(stockTransaction);
         item.bind(stock);
 
-        given(itemWriterRepository.updateStock(any(ItemAggregateDto.class))).willReturn(item.toWithStockDto());
+        given(itemWriterRepository.updateStock(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
         Item actual = itemWriter.updateStock(item);
