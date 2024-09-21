@@ -1,4 +1,4 @@
-package com.shippingflow.core.aggregate.domain.order.local;
+package com.shippingflow.core.aggregate.domain.order.model.local;
 
 public class Address {
 

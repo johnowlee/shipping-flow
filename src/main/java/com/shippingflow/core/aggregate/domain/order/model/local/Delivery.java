@@ -1,6 +1,6 @@
-package com.shippingflow.core.aggregate.domain.order.local;
+package com.shippingflow.core.aggregate.domain.order.model.local;
 
-import com.shippingflow.core.aggregate.domain.order.root.Order;
+import com.shippingflow.core.aggregate.domain.order.model.root.Order;
 
 import java.time.LocalDateTime;
 

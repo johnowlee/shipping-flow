@@ -2,10 +2,10 @@ package com.shippingflow.core.usecase.aggregate.item;
 
 import com.shippingflow.core.aggregate.domain.item.component.ItemReader;
 import com.shippingflow.core.aggregate.domain.item.component.ItemWriter;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.model.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransaction;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.model.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.common.ClockManager;

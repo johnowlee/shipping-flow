@@ -1,12 +1,13 @@
-package com.shippingflow.core.aggregate.domain.item.root;
+package com.shippingflow.core.aggregate.domain.item.model.root;
 
 import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
 import com.shippingflow.core.aggregate.domain.item.dto.ItemDto;
 import com.shippingflow.core.aggregate.domain.item.dto.ItemWithStockDto;
 import com.shippingflow.core.aggregate.domain.item.dto.StockDto;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.model.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransaction;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.model.root.Item;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import org.assertj.core.groups.Tuple;

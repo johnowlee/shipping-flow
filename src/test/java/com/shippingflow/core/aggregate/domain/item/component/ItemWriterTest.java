@@ -1,11 +1,11 @@
 package com.shippingflow.core.aggregate.domain.item.component;
 
 import com.shippingflow.core.aggregate.domain.item.dto.ItemAggregateDto;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransaction;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.model.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransaction;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransactionType;
 import com.shippingflow.core.aggregate.domain.item.repository.ItemWriterRepository;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
+import com.shippingflow.core.aggregate.domain.item.model.root.Item;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

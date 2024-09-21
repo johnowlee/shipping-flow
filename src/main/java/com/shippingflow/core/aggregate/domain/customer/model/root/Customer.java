@@ -1,4 +1,4 @@
-package com.shippingflow.core.aggregate.domain.customer;
+package com.shippingflow.core.aggregate.domain.customer.model.root;
 
 import lombok.Builder;
 

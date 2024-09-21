@@ -1,8 +1,8 @@
-package com.shippingflow.core.aggregate.domain.item.root;
+package com.shippingflow.core.aggregate.domain.item.model.root;
 
 import com.shippingflow.core.aggregate.domain.item.dto.*;
-import com.shippingflow.core.aggregate.domain.item.local.Stock;
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.model.local.Stock;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransactionType;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import lombok.Builder;

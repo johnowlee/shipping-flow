@@ -1,9 +1,9 @@
-package com.shippingflow.core.aggregate.domain.order.root;
+package com.shippingflow.core.aggregate.domain.order.model.root;
 
-import com.shippingflow.core.aggregate.domain.customer.Customer;
-import com.shippingflow.core.aggregate.domain.item.root.Item;
-import com.shippingflow.core.aggregate.domain.order.root.Order;
-import com.shippingflow.core.aggregate.domain.order.local.OrderItem;
+import com.shippingflow.core.aggregate.domain.customer.model.root.Customer;
+import com.shippingflow.core.aggregate.domain.item.model.root.Item;
+import com.shippingflow.core.aggregate.domain.order.model.local.OrderItem;
+import com.shippingflow.core.aggregate.domain.order.model.root.Order;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

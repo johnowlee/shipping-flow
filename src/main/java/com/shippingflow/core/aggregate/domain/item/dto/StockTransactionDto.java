@@ -1,6 +1,6 @@
 package com.shippingflow.core.aggregate.domain.item.dto;
 
-import com.shippingflow.core.aggregate.domain.item.local.StockTransactionType;
+import com.shippingflow.core.aggregate.domain.item.model.local.StockTransactionType;
 
 import java.time.LocalDateTime;
 
