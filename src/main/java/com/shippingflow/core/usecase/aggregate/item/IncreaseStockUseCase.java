@@ -13,16 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class IncreaseStockUseCase extends UpdateStockUseCase {
 
     public IncreaseStockUseCase(ItemReader itemReader, ItemWriter itemWriter, ClockManager clockManager) {
-        super(itemReader, itemWriter, clockManager);
+        super(itemReader, itemWriter, clockManager, StockTransactionType.INCREASE);
     }
 
     @Override
     protected void updateStockQuantity(Item item, long quantity) {
         item.increaseStock(quantity);
-    }
-
-    @Override
-    protected void recordStockTransaction(Item item, long quantity, ClockManager clockManager) {
-        item.recordStockTransaction(StockTransactionType.INCREASE, quantity, clockManager.getNowDateTime());
     }
 }
