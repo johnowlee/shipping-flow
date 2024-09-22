@@ -5,11 +5,14 @@ import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "stock")
 @Entity(name = "Stock")
@@ -35,10 +38,6 @@ public class StockEntity {
         this.quantity = quantity;
     }
 
-    public static StockEntity create() {
-        return of(null, null);
-    }
-
     public static StockEntity buildFrom(StockDto stockDto) {
         return of(stockDto.id(), stockDto.quantity());
     }
@@ -51,18 +50,33 @@ public class StockEntity {
         this.item = item;
     }
 
-    public void addTransaction(StockTransactionEntity stockTransaction) {
-        this.transactions.add(stockTransaction);
-        stockTransaction.bindTo(this);
-    }
-
     public void addTransactionsFrom(List<StockTransactionDto> stockTransactionDtoList) {
         stockTransactionDtoList.stream()
                 .map(StockTransactionEntity::createFrom)
                 .forEach(this::addTransaction);
     }
 
+    private void addTransaction(StockTransactionEntity stockTransaction) {
+        this.transactions.add(stockTransaction);
+        stockTransaction.bindTo(this);
+    }
+
     private static StockEntity of(Long id, Long quantity) {
         return builder().id(id).quantity(quantity).build();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+
+        if (!(object instanceof StockEntity stock)) {
+            return false;
+        }
+        return this.getId() != null && Objects.equals(this.getId(), stock.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
 }
