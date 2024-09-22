@@ -68,8 +68,16 @@ public class ItemEntity {
 
     public ItemWithStockDto toItemWithStockDto() {
         ItemDto itemDto = ItemDto.of(this.id, this.name, this.price, this.description);
-        StockDto stockDto = this.stock.toStockDto();
+        StockDto stockDto = checkStockPresence();
         return ItemWithStockDto.of(itemDto, stockDto);
+    }
+
+    private StockDto checkStockPresence() {
+        return this.isStockPresent() ? this.stock.toStockDto() : null;
+    }
+
+    private boolean isStockPresent() {
+        return this.stock != null;
     }
 
     private static ItemEntity buildFrom(ItemDto itemDto) {
