@@ -40,6 +40,10 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     @Value(staticConstructor = "of")
     public static class Output implements UseCase.Output {
         ItemWithStockDto itemWithStockDto;
+
+        public boolean isStockDtoPresent() {
+            return itemWithStockDto.stock() != null;
+        }
     }
 
     private Item createItemFrom(Input input) {

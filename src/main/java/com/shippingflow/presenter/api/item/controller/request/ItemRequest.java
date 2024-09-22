@@ -8,8 +8,8 @@ public record ItemRequest(
         @NotBlank
         String name,
         Long price,
-        String description,
-        Long quantity
+        Long quantity,
+        String description
 ) {
 
     public CreateItemUseCase.Input toInput() {
