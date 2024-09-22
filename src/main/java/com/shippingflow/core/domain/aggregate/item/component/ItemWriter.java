@@ -12,8 +12,8 @@ public class ItemWriter {
 
     private final ItemWriterRepository itemWriterRepository;
 
-    public Item save(Item item) {
-        ItemWithStockDto itemWithStockDto = itemWriterRepository.save(item.toItemAggregateDto());
+    public Item saveNewItem(Item item) {
+        ItemWithStockDto itemWithStockDto = itemWriterRepository.saveNewItem(item.toItemAggregateDto());
         return Item.from(itemWithStockDto);
     }
 

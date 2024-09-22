@@ -5,7 +5,7 @@ import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 
 public interface ItemWriterRepository {
 
-    ItemWithStockDto save(ItemAggregateDto itemAggregateDto);
+    ItemWithStockDto saveNewItem(ItemAggregateDto itemAggregateDto);
 
     ItemWithStockDto updateStock(ItemAggregateDto itemAggregateDto);
 }

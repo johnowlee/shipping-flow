@@ -78,7 +78,7 @@ class CreateItemUseCaseTest {
         savedItem.bind(savedStock);
 
         willDoNothing().given(itemValidator).validateItemNameDuplication(name);
-        given(itemWriter.save(createdItem)).willReturn(savedItem);
+        given(itemWriter.saveNewItem(createdItem)).willReturn(savedItem);
 
         // when
         CreateItemUseCase.Output output = createItemUseCase.execute(input);

@@ -25,7 +25,7 @@ public class CreateItemUseCase extends UseCase<CreateItemUseCase.Input, CreateIt
     @Override
     public Output execute(Input input) {
         itemValidator.validateItemNameDuplication(input.name);
-        Item item = itemWriter.save(createItemFrom(input));
+        Item item = itemWriter.saveNewItem(createItemFrom(input));
         return Output.of(item.toItemWithStockDto());
     }
 

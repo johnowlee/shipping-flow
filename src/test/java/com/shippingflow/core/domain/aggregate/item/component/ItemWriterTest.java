@@ -30,7 +30,7 @@ class ItemWriterTest {
 
     @DisplayName("상품을 저장한다.")
     @Test
-    void save() {
+    void saveNewItem() {
         // given
         Item item = Item.builder()
                 .id(1L)
@@ -38,10 +38,10 @@ class ItemWriterTest {
                 .price(1000L)
                 .build();
 
-        given(itemWriterRepository.save(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
+        given(itemWriterRepository.saveNewItem(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
-        Item actual = itemWriter.save(item);
+        Item actual = itemWriter.saveNewItem(item);
 
         // then
         assertThat(actual.getId()).isEqualTo(1L);
@@ -65,10 +65,10 @@ class ItemWriterTest {
                 .build();
         item.bind(stock);
 
-        given(itemWriterRepository.save(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
+        given(itemWriterRepository.saveNewItem(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
-        Item actual = itemWriter.save(item);
+        Item actual = itemWriter.saveNewItem(item);
 
         // then
         assertThat(actual.getId()).isEqualTo(1L);
