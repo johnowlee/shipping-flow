@@ -5,10 +5,13 @@ import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionT
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "stock_transaction")
 @Entity(name = "StockTransaction")
@@ -57,5 +60,20 @@ public class StockTransactionEntity {
                 .transactionType(transactionType)
                 .transactionDateTime(transactionDateTime)
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+
+        if (!(object instanceof StockTransactionEntity transaction)) {
+            return false;
+        }
+        return this.getId() != null && Objects.equals(this.getId(), transaction.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
 }

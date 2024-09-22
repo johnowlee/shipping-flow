@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item")
 @Entity(name = "Item")
@@ -37,9 +39,22 @@ public class ItemEntity {
         this.description = description;
     }
 
+    public void bind(StockEntity stock) {
+        this.stock = stock;
+        stock.bindTo(this);
+    }
+
+    public static ItemEntity createFrom(ItemAggregateDto itemAggregateDto) {
+        if (itemAggregateDto.isStockAbsent()) {
+            ItemDto itemDto = itemAggregateDto.item();
+            return buildFrom(itemDto);
+        }
+        return buildFrom(itemAggregateDto);
+    }
+
     public static ItemEntity buildFrom(ItemAggregateDto itemAggregateDto) {
         ItemDto itemDto = itemAggregateDto.item();
-        ItemEntity itemEntity = of(itemDto.id(), itemDto.name(), itemDto.price(), itemDto.description());
+        ItemEntity itemEntity = buildFrom(itemDto);
 
         StockDto stockDto = itemAggregateDto.stock();
         StockEntity stockEntity = StockEntity.buildFrom(stockDto);
@@ -57,13 +72,8 @@ public class ItemEntity {
         return ItemWithStockDto.of(itemDto, stockDto);
     }
 
-    private void bind(StockEntity stock) {
-        this.stock = stock;
-        stock.bindTo(this);
-    }
-
-    private static ItemEntity create(String name, Long price, String description) {
-        return of(null, name, price, description);
+    private static ItemEntity buildFrom(ItemDto itemDto) {
+        return of(itemDto.id(), itemDto.name(), itemDto.price(), itemDto.description());
     }
 
     private static ItemEntity of(Long id, String name, Long price, String description) {
@@ -73,5 +83,20 @@ public class ItemEntity {
                 .price(price)
                 .description(description)
                 .build();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+
+        if (!(object instanceof ItemEntity item)) {
+            return false;
+        }
+        return this.getId() != null && Objects.equals(this.getId(), item.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
     }
 }
