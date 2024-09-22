@@ -4,6 +4,8 @@ import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
+import com.shippingflow.core.usecase.aggregate.item.DecreaseStockUseCase;
+import com.shippingflow.core.usecase.aggregate.item.IncreaseStockUseCase;
 import com.shippingflow.presenter.WebMvcTestSupport;
 import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +32,12 @@ class ItemControllerTest extends WebMvcTestSupport {
     @MockBean
     CreateItemUseCase createItemUseCase;
 
+    @MockBean
+    IncreaseStockUseCase increaseStockUseCase;
+
+    @MockBean
+    DecreaseStockUseCase decreaseStockUseCase;
+
     @DisplayName("상품을 등록한다.")
     @Test
     void createItem() throws Exception {
@@ -50,7 +58,7 @@ class ItemControllerTest extends WebMvcTestSupport {
         given(createItemUseCase.execute(any(CreateItemUseCase.Input.class))).willReturn(output);
 
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.post("/items")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createItemRequest))
                 )
@@ -72,7 +80,7 @@ class ItemControllerTest extends WebMvcTestSupport {
         String description = "This is ItemA";
         CreateItemRequest createItemRequest = new CreateItemRequest(itemName, price, 1000L, description);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/items")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createItemRequest))
                 )
