@@ -4,6 +4,7 @@ import com.shippingflow.core.domain.aggregate.item.component.ItemReader;
 import com.shippingflow.core.domain.aggregate.item.component.ItemWriter;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import com.shippingflow.core.domain.aggregate.item.model.root.Item;
 import com.shippingflow.core.usecase.UseCase;
 import com.shippingflow.core.usecase.common.ClockManager;
@@ -16,6 +17,7 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     private final ItemReader itemReader;
     private final ItemWriter itemWriter;
     private final ClockManager clockManager;
+    private final StockTransactionType stockTransactionType;
 
     @Override
     public Output execute(Input input) {
@@ -24,14 +26,24 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
         return toOutput(updatedItem);
     }
 
+    public StockTransactionType getTransactionType() {
+        return stockTransactionType;
+    }
+
     private Item findItem(long itemId) {
         return itemReader.getItemWithStockById(itemId);
     }
 
     private Item updateStock(Item item, long quantity) {
         updateStockQuantity(item, quantity);
-        recordStockTransaction(item, quantity, clockManager);
+        recordStockTransaction(item, quantity);
         return persist(item);
+    }
+
+    protected abstract void updateStockQuantity(Item item, long quantity);
+
+    private void recordStockTransaction(Item item, long quantity) {
+        item.recordStockTransaction(stockTransactionType, quantity, clockManager.getNowDateTime());
     }
 
     private Item persist(Item item) {
@@ -41,10 +53,6 @@ public abstract class UpdateStockUseCase extends UseCase<UpdateStockUseCase.Inpu
     private static Output toOutput(Item item) {
         return Output.of(item.toDto(), item.getStock().toDto());
     }
-
-    protected abstract void updateStockQuantity(Item item, long quantity);
-
-    protected abstract void recordStockTransaction(Item item, long quantity, ClockManager clockManager);
 
     @Value(staticConstructor = "of")
     public static class Input implements UseCase.Input {
