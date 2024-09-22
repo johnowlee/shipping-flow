@@ -1,0 +1,10 @@
+### 신규 상품 등록
+POST localhost:8080/items
+Content-Type: application/json
+
+{
+  "name": "itemA",
+  "price": 1000,
+  "quantity": 3000,
+  "description": "this is ItemA"
+}
