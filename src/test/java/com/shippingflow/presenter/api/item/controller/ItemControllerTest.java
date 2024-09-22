@@ -5,7 +5,7 @@ import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
 import com.shippingflow.presenter.WebMvcTestSupport;
-import com.shippingflow.presenter.api.item.controller.request.ItemRequest;
+import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +38,7 @@ class ItemControllerTest extends WebMvcTestSupport {
         long price = 1000L;
         long quantity = 5000L;
         String description = "This is ItemA";
-        ItemRequest itemRequest = new ItemRequest(itemName, price, quantity, description);
+        CreateItemRequest createItemRequest = new CreateItemRequest(itemName, price, quantity, description);
 
         ItemDto itemDto = new ItemDto(1L, itemName, price, description);
         StockDto stockDto = new StockDto(1L, quantity);
@@ -52,7 +52,7 @@ class ItemControllerTest extends WebMvcTestSupport {
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.post("/items")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(itemRequest))
+                        .content(objectMapper.writeValueAsString(createItemRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -70,11 +70,11 @@ class ItemControllerTest extends WebMvcTestSupport {
         // given
         long price = 1000L;
         String description = "This is ItemA";
-        ItemRequest itemRequest = new ItemRequest(itemName, price, 1000L, description);
+        CreateItemRequest createItemRequest = new CreateItemRequest(itemName, price, 1000L, description);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/items")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(itemRequest))
+                        .content(objectMapper.writeValueAsString(createItemRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
