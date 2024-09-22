@@ -1,5 +1,5 @@
 ### 신규 상품 등록
-POST localhost:8080/items
+POST localhost:8080/api/items
 Content-Type: application/json
 
 {
@@ -7,4 +7,13 @@ Content-Type: application/json
   "price": 1000,
   "quantity": 3000,
   "description": "this is ItemA"
+}
+
+### 상품 입출고
+POST localhost:8080/api/items/1/stock-update
+Content-Type: application/json
+
+{
+  "transactionType": "INCREASE",
+  "quantity": 2000
 }
