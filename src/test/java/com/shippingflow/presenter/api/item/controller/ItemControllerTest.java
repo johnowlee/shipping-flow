@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -39,8 +38,11 @@ class ItemControllerTest extends WebMvcTestSupport {
     @MockBean
     IncreaseStockUseCase increaseStockUseCase;
 
-    @Mock
+    @MockBean
     DecreaseStockUseCase decreaseStockUseCase;
+
+    @MockBean
+    GetItemsUseCase getItemsUseCase;
 
     @DisplayName("상품을 등록한다.")
     @Test

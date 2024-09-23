@@ -5,6 +5,8 @@ import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.infrastructure.db.jpa.item.ItemEntity;
 import com.shippingflow.infrastructure.db.jpa.item.StockEntity;
+import com.shippingflow.infrastructure.db.jpa.support.paging.PageableFactory;
+import com.shippingflow.infrastructure.db.jpa.support.paging.mapper.ItemEntityPageMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,18 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("local")
-@Import(ItemReaderJpaRepository.class)
+@Import({ItemReaderJpaRepository.class, ItemEntityPageMapper.class, PageableFactory.class})
 @DataJpaTest
 class ItemReaderJpaRepositoryTest {
 
     @Autowired
     ItemJpaRepository itemJpaRepository;
+
+    @Autowired
+    ItemEntityPageMapper itemEntityPageMapper;
+
+    @Autowired
+    PageableFactory pageableFactory;
 
     @Autowired
     ItemReaderJpaRepository itemReaderJpaRepository;
