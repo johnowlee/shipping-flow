@@ -9,12 +9,12 @@ public record UpdateItemStockRequest(
 
         @NotBlank
         @ValidStockTransactionType
-        String transactionType,
+        String stockTransactionType,
 
         @Positive
         long quantity) {
 
-        public StockTransactionType getStockTransactionType() {
-                return StockTransactionType.valueOf(this.transactionType.toUpperCase());
+        public StockTransactionType convertStockTransactionTypeToEnum() {
+                return StockTransactionType.valueOf(this.stockTransactionType.toUpperCase());
         }
 }
