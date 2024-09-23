@@ -5,8 +5,6 @@ import com.shippingflow.presenter.api.item.controller.request.validator.ValidSto
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-import static com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType.*;
-
 public record UpdateItemStockRequest(
 
         @NotBlank
@@ -16,8 +14,7 @@ public record UpdateItemStockRequest(
         @Positive
         long quantity) {
 
-        public StockTransactionType convertTransactionTypeToEnum() {
-                String transactionTypeUpperCase = this.transactionType.toUpperCase();
-                return transactionTypeUpperCase.equals(INCREASE.name()) ? INCREASE : DECREASE;
+        public StockTransactionType getStockTransactionType() {
+                return StockTransactionType.valueOf(this.transactionType.toUpperCase());
         }
 }

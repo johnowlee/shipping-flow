@@ -1,10 +1,8 @@
 package com.shippingflow.presenter.api.item.controller;
 
-import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
-import com.shippingflow.core.usecase.aggregate.item.DecreaseStockUseCase;
-import com.shippingflow.core.usecase.aggregate.item.IncreaseStockUseCase;
 import com.shippingflow.core.usecase.aggregate.item.UpdateStockUseCase;
+import com.shippingflow.core.usecase.aggregate.item.UpdateStockUseCaseFactory;
 import com.shippingflow.presenter.api.RestApiResponse;
 import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
 import com.shippingflow.presenter.api.item.controller.request.UpdateItemStockRequest;
@@ -13,16 +11,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType.*;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/items")
 @RestController
 public class ItemController {
 
     private final CreateItemUseCase createItemUseCase;
-    private final IncreaseStockUseCase increaseStockUseCase;
-    private final DecreaseStockUseCase decreaseStockUseCase;
+    private final UpdateStockUseCaseFactory updateStockUseCaseFactory;
 
     @PostMapping
     public RestApiResponse<ItemResponse> createItem(@Valid @RequestBody CreateItemRequest createItemRequest) {
@@ -31,18 +26,12 @@ public class ItemController {
         return RestApiResponse.created(ItemResponse.from(output));
     }
 
+    //TODO: test
     @PostMapping("{id}/stock-update")
-    public RestApiResponse<ItemResponse> updateItemStock(
-            @PathVariable long id,
-            @Valid @RequestBody UpdateItemStockRequest request) {
-        StockTransactionType transactionType = request.convertTransactionTypeToEnum();
-        UpdateStockUseCase updateStockUseCase = setUseCaseImplementBy(transactionType);
+    public RestApiResponse<ItemResponse> updateItemStock(@PathVariable long id, @Valid @RequestBody UpdateItemStockRequest request) {
+        UpdateStockUseCase updateStockUseCase = updateStockUseCaseFactory.getUseCaseBy(request.getStockTransactionType());
         UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(id, request.quantity());
         UpdateStockUseCase.Output output = updateStockUseCase.execute(input);
         return RestApiResponse.created(ItemResponse.from(output));
-    }
-
-    private UpdateStockUseCase setUseCaseImplementBy(StockTransactionType transactionType) {
-        return transactionType == INCREASE ? increaseStockUseCase : decreaseStockUseCase;
     }
 }

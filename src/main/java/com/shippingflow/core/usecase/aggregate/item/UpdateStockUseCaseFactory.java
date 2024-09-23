@@ -19,7 +19,7 @@ public class UpdateStockUseCaseFactory {
         });
     }
 
-    public UpdateStockUseCase getUseCase(StockTransactionType transactionType) {
+    public UpdateStockUseCase getUseCaseBy(StockTransactionType transactionType) {
         return strategies.get(transactionType);
     }
 }
