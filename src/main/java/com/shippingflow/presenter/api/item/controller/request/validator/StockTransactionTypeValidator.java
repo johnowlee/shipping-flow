@@ -1,10 +1,9 @@
 package com.shippingflow.presenter.api.item.controller.request.validator;
 
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
-import static com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType.DECREASE;
-import static com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType.INCREASE;
 
 public class StockTransactionTypeValidator implements ConstraintValidator<ValidStockTransactionType, String> {
     @Override
@@ -14,8 +13,14 @@ public class StockTransactionTypeValidator implements ConstraintValidator<ValidS
 
     @Override
     public boolean isValid(String stockTransactionType, ConstraintValidatorContext context) {
-        String transactionTypeUpperCase = stockTransactionType.toUpperCase();
-        return transactionTypeUpperCase.equals(INCREASE.name()) ||
-                transactionTypeUpperCase.equals(DECREASE.name());
+        if (StringUtils.isBlank(stockTransactionType)) {
+            return false;
+        }
+        try {
+            StockTransactionType.valueOf(stockTransactionType.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
