@@ -25,13 +25,12 @@ public class ItemController {
         CreateItemUseCase.Output output = createItemUseCase.execute(input);
         return RestApiResponse.created(ItemResponse.from(output));
     }
-
-    //TODO: test
+    
     @PostMapping("{id}/stock-update")
     public RestApiResponse<ItemResponse> updateItemStock(@PathVariable long id, @Valid @RequestBody UpdateItemStockRequest request) {
         UpdateStockUseCase updateStockUseCase = updateStockUseCaseFactory.getUseCaseBy(request.convertStockTransactionTypeToEnum());
         UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(id, request.quantity());
         UpdateStockUseCase.Output output = updateStockUseCase.execute(input);
-        return RestApiResponse.created(ItemResponse.from(output));
+        return RestApiResponse.ok(ItemResponse.from(output));
     }
 }
