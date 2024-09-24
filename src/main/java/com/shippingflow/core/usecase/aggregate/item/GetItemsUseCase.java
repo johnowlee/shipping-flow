@@ -17,7 +17,6 @@ public class GetItemsUseCase extends UseCase<GetItemsUseCase.Input, GetItemsUseC
 
     private final ItemReader itemReader;
 
-    // TODO: Test
     @Override
     public Output execute(Input input) {
         PageResponse<ItemWithStockDto> pageResponse = itemReader.getItems(input.paginationRequest);
