@@ -1,4 +1,4 @@
-package com.shippingflow.infrastructure.db.jpa.item;
+package com.shippingflow.infrastructure.db.item.jpa.entity;
 
 import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;

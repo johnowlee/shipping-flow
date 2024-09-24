@@ -1,12 +1,12 @@
-package com.shippingflow.infrastructure.db.jpa.item.repository;
+package com.shippingflow.infrastructure.db.item.jpa.repository;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
-import com.shippingflow.infrastructure.db.jpa.item.ItemEntity;
-import com.shippingflow.infrastructure.db.jpa.item.StockEntity;
-import com.shippingflow.infrastructure.db.jpa.support.paging.PageableFactory;
-import com.shippingflow.infrastructure.db.jpa.support.paging.mapper.ItemEntityPageMapper;
+import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.jpa.entity.StockEntity;
+import com.shippingflow.infrastructure.service.item.ItemEntityPageMapper;
+import com.shippingflow.infrastructure.service.support.paging.PageableFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
