@@ -37,6 +37,6 @@ public class ItemReaderJpaRepository implements ItemReaderRepository {
         // TODO: 매핑과 같은 역할을 Repository에서 하는게 맞는가? SRP위배
         Pageable pageable = pageableFactory.createPageable(paginationRequest);
         Page<ItemEntity> itemEntityPage = itemJpaRepository.findAll(pageable);
-        return itemEntityPageMapper.toItemWithStockPageFrom(itemEntityPage);
+        return itemEntityPageMapper.toItemWithStockDtoPageResponse(itemEntityPage);
     }
 }

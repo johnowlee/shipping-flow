@@ -11,8 +11,7 @@ import java.util.List;
 @Component
 public class ItemEntityPageMapper {
 
-    // TODO: Test
-    public PageResponse<ItemWithStockDto> toItemWithStockPageFrom(Page<ItemEntity> itemEntityPage) {
+    public PageResponse<ItemWithStockDto> toItemWithStockDtoPageResponse(Page<ItemEntity> itemEntityPage) {
         return new PageResponse<>(
                 toItemWithStockDtoList(itemEntityPage),
                 itemEntityPage.getNumber(),

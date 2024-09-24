@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-// TODO: Test
 @RequiredArgsConstructor
 @Service
 public class ItemReaderRepositoryHelper implements ItemReaderRepository {
@@ -38,6 +37,6 @@ public class ItemReaderRepositoryHelper implements ItemReaderRepository {
     public PageResponse<ItemWithStockDto> findAllItemsWithStock(PaginationRequest paginationRequest) {
         Pageable pageable = pageableFactory.createPageable(paginationRequest);
         Page<ItemEntity> itemEntityPage = itemReaderPort.findAllItems(pageable);
-        return itemEntityPageMapper.toItemWithStockPageFrom(itemEntityPage);
+        return itemEntityPageMapper.toItemWithStockDtoPageResponse(itemEntityPage);
     }
 }
