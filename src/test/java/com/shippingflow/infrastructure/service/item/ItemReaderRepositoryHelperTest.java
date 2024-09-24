@@ -1,27 +1,30 @@
-package com.shippingflow.infrastructure.db.jpa.item.repository;
+package com.shippingflow.infrastructure.service.item;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
-import com.shippingflow.infrastructure.db.jpa.item.ItemEntity;
-import com.shippingflow.infrastructure.db.jpa.item.StockEntity;
-import com.shippingflow.infrastructure.db.jpa.support.paging.PageableFactory;
-import com.shippingflow.infrastructure.db.jpa.support.paging.mapper.ItemEntityPageMapper;
+import com.shippingflow.core.domain.common.pagination.PageResponse;
+import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.jpa.entity.StockEntity;
+import com.shippingflow.infrastructure.db.item.jpa.repository.ItemJpaRepository;
+import com.shippingflow.infrastructure.service.support.paging.PageableFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("local")
-@Import({ItemReaderJpaRepository.class, ItemEntityPageMapper.class, PageableFactory.class})
-@DataJpaTest
-class ItemReaderJpaRepositoryTest {
+@Transactional
+@SpringBootTest
+class ItemReaderRepositoryHelperTest {
 
     @Autowired
     ItemJpaRepository itemJpaRepository;
@@ -33,7 +36,7 @@ class ItemReaderJpaRepositoryTest {
     PageableFactory pageableFactory;
 
     @Autowired
-    ItemReaderJpaRepository itemReaderJpaRepository;
+    ItemReaderRepositoryHelper itemReaderRepositoryHelper;
 
     @DisplayName("중복된 상품명이 있으면 true를 반환한다.")
     @Test
@@ -46,7 +49,7 @@ class ItemReaderJpaRepositoryTest {
         itemJpaRepository.save(item);
 
         // when
-        boolean actual = itemReaderJpaRepository.existsByName(name);
+        boolean actual = itemReaderRepositoryHelper.existsByName(name);
 
         // then
         assertThat(actual).isTrue();
@@ -63,7 +66,7 @@ class ItemReaderJpaRepositoryTest {
         itemJpaRepository.save(itemEntity);
 
         // when
-        boolean actual = itemReaderJpaRepository.existsByName("ItemB");
+        boolean actual = itemReaderRepositoryHelper.existsByName("ItemB");
 
         // then
         assertThat(actual).isFalse();
@@ -87,7 +90,7 @@ class ItemReaderJpaRepositoryTest {
         ItemEntity savedItemEntity = itemJpaRepository.save(itemEntity);
 
         // when
-        Optional<ItemWithStockDto> actual = itemReaderJpaRepository.findItemWithStockById(savedItemEntity.getId());
+        Optional<ItemWithStockDto> actual = itemReaderRepositoryHelper.findItemWithStockById(savedItemEntity.getId());
 
         // then
         assertThat(actual).isPresent();
@@ -121,11 +124,56 @@ class ItemReaderJpaRepositoryTest {
         ItemEntity savedItemEntity = itemJpaRepository.save(itemEntity);
 
         // when
-        Optional<ItemWithStockDto> actual = itemReaderJpaRepository.findItemWithStockById(999L);
+        Optional<ItemWithStockDto> actual = itemReaderRepositoryHelper.findItemWithStockById(999L);
 
         // then
         assertThat(actual).isEmpty();
         assertThat(savedItemEntity.getId()).isNotEqualTo(999L);
+    }
+
+    @DisplayName("페이징 요청에 따라 상품 목록과 재고 정보를 반환한다.")
+    @Test
+    void findAllItemsWithStock() {
+        // given
+        String name1 = "ItemA";
+        String name2 = "ItemB";
+        String name3 = "ItemC";
+        long price = 1000L;
+        String description = "This is ItemA";
+
+        ItemEntity item1 = createNewItemForTest(name1, price, description);
+        ItemEntity item2 = createNewItemForTest(name2, price, description);
+        ItemEntity item3 = createNewItemForTest(name3, price, description);
+
+        StockEntity stock1 = StockEntity.builder().quantity(100L).build();
+        StockEntity stock2 = StockEntity.builder().quantity(200L).build();
+        StockEntity stock3 = StockEntity.builder().quantity(300L).build();
+
+        item1.bind(stock1);
+        item2.bind(stock2);
+        item3.bind(stock3);
+
+        itemJpaRepository.saveAll(List.of(item1, item2, item3));
+
+        PaginationRequest paginationRequest = PaginationRequest.of(1, 2, "name", "asc");
+
+        // when
+        PageResponse<ItemWithStockDto> pageResponse = itemReaderRepositoryHelper.findAllItemsWithStock(paginationRequest);
+
+        // then
+        assertThat(pageResponse).isNotNull();
+        assertThat(pageResponse.pageNumber()).isEqualTo(0);
+        assertThat(pageResponse.pageSize()).isEqualTo(2);
+        assertThat(pageResponse.totalElements()).isEqualTo(3);
+        assertThat(pageResponse.totalPages()).isEqualTo(2);
+
+        assertThat(pageResponse.content())
+                .hasSize(2)
+                .flatExtracting(
+                        item -> item.item().name(),
+                        item -> item.stock().quantity()
+                )
+                .containsExactly("ItemA", 100L, "ItemB", 200L);
     }
 
     private static ItemEntity createNewItemForTest(String name, long price, String description) {
