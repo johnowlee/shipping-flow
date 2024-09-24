@@ -3,6 +3,8 @@ package com.shippingflow.core.domain.aggregate.item.component;
 import com.shippingflow.core.domain.aggregate.item.repository.ItemReaderRepository;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.model.root.Item;
+import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +24,9 @@ public class ItemReader {
         ItemWithStockDto dto = itemReaderRepository.findItemWithStockById(id)
                 .orElseThrow(() -> DomainException.from(ItemError.NOT_FOUND_ITEM));
         return Item.from(dto);
+    }
+
+    public PageResponse<ItemWithStockDto> getItems(PaginationRequest paginationRequest) {
+        return itemReaderRepository.findAllItemsWithStock(paginationRequest);
     }
 }
