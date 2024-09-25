@@ -1,9 +1,9 @@
-package com.shippingflow.infrastructure.service.item;
+package com.shippingflow.infrastructure.db.item.mapper;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.jpa.entity.StockEntity;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;

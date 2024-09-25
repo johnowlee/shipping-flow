@@ -1,4 +1,4 @@
-package com.shippingflow.infrastructure.service.support.paging;
+package com.shippingflow.infrastructure.common.factory;
 
 import com.shippingflow.core.domain.common.pagination.PaginationRequest;
 import org.springframework.data.domain.PageRequest;

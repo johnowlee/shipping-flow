@@ -1,14 +1,15 @@
-package com.shippingflow.infrastructure.service.item;
+package com.shippingflow.infrastructure.db.item.service;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.domain.common.pagination.PaginationRequest;
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.jpa.entity.StockEntity;
-import com.shippingflow.infrastructure.db.item.jpa.repository.ItemJpaRepository;
-import com.shippingflow.infrastructure.service.support.paging.PageableFactory;
+import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockEntity;
+import com.shippingflow.infrastructure.db.item.adapter.ItemJpaRepository;
+import com.shippingflow.infrastructure.common.factory.PageableFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("local")
 @Transactional
 @SpringBootTest
-class ItemReaderRepositoryHelperTest {
+class ItemReaderRepositoryAdapterTest {
 
     @Autowired
     ItemJpaRepository itemJpaRepository;
@@ -36,7 +37,7 @@ class ItemReaderRepositoryHelperTest {
     PageableFactory pageableFactory;
 
     @Autowired
-    ItemReaderRepositoryHelper itemReaderRepositoryHelper;
+    ItemReaderRepositoryAdapter itemReaderRepositoryAdapter;
 
     @DisplayName("중복된 상품명이 있으면 true를 반환한다.")
     @Test
@@ -49,7 +50,7 @@ class ItemReaderRepositoryHelperTest {
         itemJpaRepository.save(item);
 
         // when
-        boolean actual = itemReaderRepositoryHelper.existsByName(name);
+        boolean actual = itemReaderRepositoryAdapter.existsByName(name);
 
         // then
         assertThat(actual).isTrue();
@@ -66,7 +67,7 @@ class ItemReaderRepositoryHelperTest {
         itemJpaRepository.save(itemEntity);
 
         // when
-        boolean actual = itemReaderRepositoryHelper.existsByName("ItemB");
+        boolean actual = itemReaderRepositoryAdapter.existsByName("ItemB");
 
         // then
         assertThat(actual).isFalse();
@@ -90,7 +91,7 @@ class ItemReaderRepositoryHelperTest {
         ItemEntity savedItemEntity = itemJpaRepository.save(itemEntity);
 
         // when
-        Optional<ItemWithStockDto> actual = itemReaderRepositoryHelper.findItemWithStockById(savedItemEntity.getId());
+        Optional<ItemWithStockDto> actual = itemReaderRepositoryAdapter.findItemWithStockById(savedItemEntity.getId());
 
         // then
         assertThat(actual).isPresent();
@@ -124,7 +125,7 @@ class ItemReaderRepositoryHelperTest {
         ItemEntity savedItemEntity = itemJpaRepository.save(itemEntity);
 
         // when
-        Optional<ItemWithStockDto> actual = itemReaderRepositoryHelper.findItemWithStockById(999L);
+        Optional<ItemWithStockDto> actual = itemReaderRepositoryAdapter.findItemWithStockById(999L);
 
         // then
         assertThat(actual).isEmpty();
@@ -158,7 +159,7 @@ class ItemReaderRepositoryHelperTest {
         PaginationRequest paginationRequest = PaginationRequest.of(1, 2, "name", "asc");
 
         // when
-        PageResponse<ItemWithStockDto> pageResponse = itemReaderRepositoryHelper.findAllItemsWithStock(paginationRequest);
+        PageResponse<ItemWithStockDto> pageResponse = itemReaderRepositoryAdapter.findAllItemsWithStock(paginationRequest);
 
         // then
         assertThat(pageResponse).isNotNull();

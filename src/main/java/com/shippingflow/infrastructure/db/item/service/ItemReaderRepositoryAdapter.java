@@ -1,12 +1,13 @@
-package com.shippingflow.infrastructure.service.item;
+package com.shippingflow.infrastructure.db.item.service;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.repository.ItemReaderRepository;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.domain.common.pagination.PaginationRequest;
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import com.shippingflow.infrastructure.db.item.port.ItemReaderPort;
-import com.shippingflow.infrastructure.service.support.paging.PageableFactory;
+import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
+import com.shippingflow.infrastructure.common.factory.PageableFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ItemReaderRepositoryHelper implements ItemReaderRepository {
+public class ItemReaderRepositoryAdapter implements ItemReaderRepository {
 
     private final ItemReaderPort itemReaderPort;
     private final ItemEntityPageMapper itemEntityPageMapper;

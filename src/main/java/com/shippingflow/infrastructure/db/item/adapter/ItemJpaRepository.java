@@ -1,6 +1,6 @@
-package com.shippingflow.infrastructure.db.item.jpa.repository;
+package com.shippingflow.infrastructure.db.item.adapter;
 
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ItemJpaRepository extends JpaRepository<ItemEntity, Long> {

@@ -1,8 +1,7 @@
 package com.shippingflow.infrastructure.db.item.adapter;
 
 import com.shippingflow.infrastructure.db.item.port.ItemReaderPort;
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.jpa.repository.ItemJpaRepository;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

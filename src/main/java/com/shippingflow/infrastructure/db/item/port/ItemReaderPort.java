@@ -1,6 +1,6 @@
 package com.shippingflow.infrastructure.db.item.port;
 
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

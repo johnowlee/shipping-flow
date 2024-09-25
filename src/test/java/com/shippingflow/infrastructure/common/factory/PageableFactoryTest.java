@@ -1,6 +1,7 @@
-package com.shippingflow.infrastructure.service.support.paging;
+package com.shippingflow.infrastructure.common.factory;
 
 import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.infrastructure.common.factory.PageableFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
