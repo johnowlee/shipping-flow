@@ -49,7 +49,7 @@ class ItemEntityTest {
 
     @DisplayName("ItemSaveDto로 부터 StockEntity가 있는 새로운 ItemEntity 객체를 생성한다.")
     @Test
-    void createItemEntityWithStockEntityFrom_itemSaveDto() {
+    void createFrom_ItemEntityWithStockEntityFrom_itemSaveDto() {
         // given
         String name = "newItemA";
         long price = 1000L;
@@ -139,6 +139,43 @@ class ItemEntityTest {
 
         assertThat(actual.stock().id()).isEqualTo(stockEntity.getId());
         assertThat(actual.stock().quantity()).isEqualTo(stockEntity.getQuantity());
+    }
+
+    @DisplayName("ItemSaveDto로 부터 재고 ItemEntity의 재고를 업데이트한다.")
+    @Test
+    void updateStockFrom() {
+        // given
+        // ItemEntity 생성
+        ItemEntity itemEntity = buildItemEntityForTest();
+        StockEntity stockEntity = buildStockEntityForTest();
+        itemEntity.bind(stockEntity);
+
+        // ItemSaveDto 생성
+        String name = "itemA";
+        long price = 1000L;
+        String description = "this is itemA";
+        ItemDto itemDto = ItemDto.of(10L, name, price, description);
+
+        long quantity = 15_000L;
+        StockDto stockDto = StockDto.of(10L, quantity);
+
+        long transactionQuantity = 10_000L;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        LocalDateTime transactionDateTime = LocalDateTime.now();
+        StockTransactionDto stockTransactionDto = StockTransactionDto.of(null, transactionQuantity, transactionType, transactionDateTime);
+
+        ItemSaveDto itemSaveDto = ItemSaveDto.of(itemDto, stockDto, stockTransactionDto);
+
+        // when
+        itemEntity.updateStockFrom(itemSaveDto);
+
+        // then
+        assertThat(itemEntity.getStock().getQuantity()).isEqualTo(quantity);
+        assertThat(itemEntity.getStock().getTransactions()).hasSize(1)
+                .extracting("id", "quantity", "transactionType", "transactionDateTime")
+                .contains(
+                        tuple(null, transactionQuantity, transactionType, transactionDateTime)
+                );
     }
 
     private static ItemEntity buildItemEntityForTest() {

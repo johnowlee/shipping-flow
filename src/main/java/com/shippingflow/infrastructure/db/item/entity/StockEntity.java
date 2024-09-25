@@ -66,6 +66,10 @@ public class StockEntity {
         stockTransactions.forEach(this::addTransaction);
     }
 
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
+    }
+
     private static StockEntity of(Long id, Long quantity) {
         return builder().id(id).quantity(quantity).build();
     }
