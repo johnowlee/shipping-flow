@@ -3,7 +3,7 @@ package com.shippingflow.infrastructure.db.item.service;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.repository.ItemReaderRepository;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
-import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import com.shippingflow.infrastructure.db.item.port.ItemReaderPort;
 import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
@@ -35,8 +35,8 @@ public class ItemReaderRepositoryAdapter implements ItemReaderRepository {
     }
 
     @Override
-    public PageResponse<ItemWithStockDto> findAllItemsWithStock(PaginationRequest paginationRequest) {
-        Pageable pageable = pageableFactory.createPageable(paginationRequest);
+    public PageResponse<ItemWithStockDto> findAllItemsWithStock(SortablePaginationRequest sortablePaginationRequest) {
+        Pageable pageable = pageableFactory.createPageable(sortablePaginationRequest);
         Page<ItemEntity> itemEntityPage = itemReaderPort.findAllItems(pageable);
         return itemEntityPageMapper.toItemWithStockDtoPageResponse(itemEntityPage);
     }

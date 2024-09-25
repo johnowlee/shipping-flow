@@ -4,7 +4,7 @@ import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
-import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import com.shippingflow.infrastructure.db.item.entity.StockEntity;
@@ -156,10 +156,10 @@ class ItemReaderRepositoryAdapterTest {
 
         itemJpaRepository.saveAll(List.of(item1, item2, item3));
 
-        PaginationRequest paginationRequest = PaginationRequest.of(1, 2, "name", "asc");
+        SortablePaginationRequest sortablePaginationRequest = SortablePaginationRequest.of(1, 2, "name", "asc");
 
         // when
-        PageResponse<ItemWithStockDto> pageResponse = itemReaderRepositoryAdapter.findAllItemsWithStock(paginationRequest);
+        PageResponse<ItemWithStockDto> pageResponse = itemReaderRepositoryAdapter.findAllItemsWithStock(sortablePaginationRequest);
 
         // then
         assertThat(pageResponse).isNotNull();
