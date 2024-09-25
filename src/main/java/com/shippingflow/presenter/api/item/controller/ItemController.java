@@ -1,6 +1,6 @@
 package com.shippingflow.presenter.api.item.controller;
 
-import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.core.usecase.aggregate.item.CreateItemUseCase;
 import com.shippingflow.core.usecase.aggregate.item.GetItemsUseCase;
 import com.shippingflow.core.usecase.aggregate.item.UpdateStockUseCase;
@@ -48,7 +48,7 @@ public class ItemController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        GetItemsUseCase.Input input = GetItemsUseCase.Input.of(PaginationRequest.of(page, size, sortBy, sortDir));
+        GetItemsUseCase.Input input = GetItemsUseCase.Input.of(SortablePaginationRequest.of(page, size, sortBy, sortDir));
         GetItemsUseCase.Output output = getItemsUseCase.execute(input);
         return RestApiResponse.ok(ItemsResponse.from(output.getPageResponse()));
     }

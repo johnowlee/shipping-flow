@@ -1,7 +1,6 @@
 package com.shippingflow.infrastructure.common.factory;
 
-import com.shippingflow.core.domain.common.pagination.PaginationRequest;
-import com.shippingflow.infrastructure.common.factory.PageableFactory;
+import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
@@ -16,11 +15,11 @@ class PageableFactoryTest {
     @Test
     void createPageableWithoutSort() {
         // given
-        PaginationRequest paginationRequest = new PaginationRequest(1, 10, null, null);
+        SortablePaginationRequest sortablePaginationRequest = new SortablePaginationRequest(1, 10, null, null);
 
         // when
         PageableFactory pageableFactory = new PageableFactory();
-        Pageable pageable = pageableFactory.createPageable(paginationRequest);
+        Pageable pageable = pageableFactory.createPageable(sortablePaginationRequest);
 
         // then
         assertThat(pageable).isInstanceOf(PageRequest.class);
@@ -33,11 +32,11 @@ class PageableFactoryTest {
     @Test
     void createPageableWithSortAscending() {
         // given
-        PaginationRequest paginationRequest = new PaginationRequest(0, 5, "name", "asc");
+        SortablePaginationRequest sortablePaginationRequest = new SortablePaginationRequest(0, 5, "name", "asc");
 
         // when
         PageableFactory pageableFactory = new PageableFactory();
-        Pageable pageable = pageableFactory.createPageable(paginationRequest);
+        Pageable pageable = pageableFactory.createPageable(sortablePaginationRequest);
 
         // then
         assertThat(pageable).isInstanceOf(PageRequest.class);
@@ -51,11 +50,11 @@ class PageableFactoryTest {
     @Test
     void createPageableWithSortDescending() {
         // given
-        PaginationRequest paginationRequest = new PaginationRequest(2, 20, "price", "desc");
+        SortablePaginationRequest sortablePaginationRequest = new SortablePaginationRequest(2, 20, "price", "desc");
 
         // when
         PageableFactory pageableFactory = new PageableFactory();
-        Pageable pageable = pageableFactory.createPageable(paginationRequest);
+        Pageable pageable = pageableFactory.createPageable(sortablePaginationRequest);
 
         // then
         assertThat(pageable).isInstanceOf(PageRequest.class);

@@ -5,7 +5,7 @@ import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
-import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,10 +42,10 @@ class GetItemsUseCaseTest {
 
         PageResponse<ItemWithStockDto> pageResponse = new PageResponse<>(itemWithStockDtoList, 0, 10, 1, 1);
 
-        PaginationRequest paginationRequest = PaginationRequest.of(1, 10, "name", "asc");
-        given(itemReader.getItems(paginationRequest)).willReturn(pageResponse);
+        SortablePaginationRequest sortablePaginationRequest = SortablePaginationRequest.of(1, 10, "name", "asc");
+        given(itemReader.getItems(sortablePaginationRequest)).willReturn(pageResponse);
 
-        GetItemsUseCase.Input input = GetItemsUseCase.Input.of(paginationRequest);
+        GetItemsUseCase.Input input = GetItemsUseCase.Input.of(sortablePaginationRequest);
 
         // when
         GetItemsUseCase.Output output = getItemsUseCase.execute(input);
@@ -67,6 +67,6 @@ class GetItemsUseCaseTest {
                         tuple(1L, "ItemA", 1000L, "this is ItemA", 1L, 100L)
                 );
 
-        then(itemReader).should(times(1)).getItems(paginationRequest);
+        then(itemReader).should(times(1)).getItems(sortablePaginationRequest);
     }
 }
