@@ -2,7 +2,7 @@ package com.shippingflow.core.usecase.aggregate.item;
 
 import com.shippingflow.core.domain.aggregate.item.component.ItemReader;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
-import com.shippingflow.core.domain.common.pagination.PaginationRequest;
+import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.usecase.UseCase;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,13 @@ public class GetItemsUseCase extends UseCase<GetItemsUseCase.Input, GetItemsUseC
 
     @Override
     public Output execute(Input input) {
-        PageResponse<ItemWithStockDto> pageResponse = itemReader.getItems(input.paginationRequest);
+        PageResponse<ItemWithStockDto> pageResponse = itemReader.getItems(input.sortablePaginationRequest);
         return Output.of(pageResponse);
     }
 
     @Value(staticConstructor = "of")
     public static class Input implements UseCase.Input {
-        PaginationRequest paginationRequest;
+        SortablePaginationRequest sortablePaginationRequest;
     }
 
     @Value(staticConstructor = "of")
