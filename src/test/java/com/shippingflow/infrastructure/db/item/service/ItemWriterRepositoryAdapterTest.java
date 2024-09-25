@@ -1,18 +1,17 @@
-package com.shippingflow.infrastructure.db.item.jpa.repository;
+package com.shippingflow.infrastructure.db.item.service;
 
 import com.shippingflow.core.domain.aggregate.item.dto.*;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.jpa.entity.StockEntity;
-import com.shippingflow.infrastructure.db.item.jpa.entity.StockTransactionEntity;
-import com.shippingflow.infrastructure.db.item.jpa.repository.ItemJpaRepository;
-import com.shippingflow.infrastructure.db.item.jpa.repository.ItemWriterJpaRepository;
+import com.shippingflow.infrastructure.db.item.adapter.ItemJpaRepository;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockTransactionEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,15 +20,15 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("local")
-@Import(ItemWriterJpaRepository.class)
-@DataJpaTest
-class ItemWriterJpaRepositoryTest {
+@Transactional
+@SpringBootTest
+class ItemWriterRepositoryAdapterTest {
+
+    @Autowired
+    ItemWriterRepositoryAdapter itemWriterRepositoryAdapter;
 
     @Autowired
     ItemJpaRepository itemJpaRepository;
-
-    @Autowired
-    ItemWriterJpaRepository itemWriterJpaRepository;
 
     @DisplayName("새로운 ItemEntity를 저장한다.")
     @Test
@@ -50,7 +49,7 @@ class ItemWriterJpaRepositoryTest {
         ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, stockDto, List.of(stockTransactionDto));
 
         // when
-        ItemWithStockDto actual = itemWriterJpaRepository.saveNewItem(itemAggregateDto);
+        ItemWithStockDto actual = itemWriterRepositoryAdapter.saveNewItem(itemAggregateDto);
 
         // then
         ItemDto actualItemDto = actual.item();
@@ -106,7 +105,7 @@ class ItemWriterJpaRepositoryTest {
         ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, stockDto, List.of(stockTransactionDto));
 
         // when
-        ItemWithStockDto actual = itemWriterJpaRepository.updateStock(itemAggregateDto);
+        ItemWithStockDto actual = itemWriterRepositoryAdapter.updateStock(itemAggregateDto);
 
         // then
         ItemDto actualItemDto = actual.item();

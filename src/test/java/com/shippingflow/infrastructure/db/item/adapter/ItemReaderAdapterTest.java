@@ -1,8 +1,7 @@
 package com.shippingflow.infrastructure.db.item.adapter;
 
-import com.shippingflow.infrastructure.db.item.jpa.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.jpa.entity.StockEntity;
-import com.shippingflow.infrastructure.db.item.jpa.repository.ItemJpaRepository;
+import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

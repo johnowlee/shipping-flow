@@ -1,8 +1,8 @@
-package com.shippingflow.infrastructure.db.item.jpa.entity;
+package com.shippingflow.infrastructure.db.item.entity;
 
 import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
-import com.shippingflow.infrastructure.db.item.jpa.entity.StockTransactionEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockTransactionEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

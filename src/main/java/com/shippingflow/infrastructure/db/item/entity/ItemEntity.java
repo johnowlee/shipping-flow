@@ -1,4 +1,4 @@
-package com.shippingflow.infrastructure.db.item.jpa.entity;
+package com.shippingflow.infrastructure.db.item.entity;
 
 import com.shippingflow.core.domain.aggregate.item.dto.*;
 import jakarta.persistence.*;
