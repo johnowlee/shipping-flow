@@ -1,7 +1,6 @@
 package com.shippingflow.infrastructure.db.item.entity;
 
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
-import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -50,13 +49,6 @@ public class StockEntity {
         this.item = item;
     }
 
-    // TODO: 2024-09-25 불필요 삭제
-    public void addTransactionsFrom(List<StockTransactionDto> stockTransactionDtoList) {
-        stockTransactionDtoList.stream()
-                .map(StockTransactionEntity::createFrom)
-                .forEach(this::addTransaction);
-    }
-
     public void addTransaction(StockTransactionEntity stockTransaction) {
         this.transactions.add(stockTransaction);
         stockTransaction.bindTo(this);
@@ -64,6 +56,10 @@ public class StockEntity {
 
     public void addTransactions(List<StockTransactionEntity> stockTransactions) {
         stockTransactions.forEach(this::addTransaction);
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 
     private static StockEntity of(Long id, Long quantity) {

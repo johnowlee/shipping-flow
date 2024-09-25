@@ -45,8 +45,7 @@ public class ItemEntity {
 
     public static ItemEntity createFrom(ItemSaveDto itemSaveDto) {
         if (itemSaveDto.isStockAbsent()) {
-            ItemDto itemDto = itemSaveDto.item();
-            return buildFrom(itemDto);
+            return buildFrom(itemSaveDto.item());
         }
         return buildFrom(itemSaveDto);
     }
@@ -60,9 +59,10 @@ public class ItemEntity {
 
         StockTransactionDto transactionDto = itemSaveDto.transaction();
         StockTransactionEntity stockTransactionEntity = StockTransactionEntity.createFrom(transactionDto);
-        stockEntity.addTransaction(stockTransactionEntity);
 
+        stockEntity.addTransaction(stockTransactionEntity);
         itemEntity.bind(stockEntity);
+
         return itemEntity;
     }
 
@@ -70,6 +70,11 @@ public class ItemEntity {
         ItemDto itemDto = ItemDto.of(this.id, this.name, this.price, this.description);
         StockDto stockDto = checkStockPresence();
         return ItemWithStockDto.of(itemDto, stockDto);
+    }
+
+    public void updateStockFrom(ItemSaveDto itemSaveDto) {
+        this.getStock().setQuantity(itemSaveDto.stock().quantity());
+        this.getStock().addTransaction(StockTransactionEntity.createFrom(itemSaveDto.transaction()));
     }
 
     private StockDto checkStockPresence() {
