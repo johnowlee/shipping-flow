@@ -2,13 +2,10 @@ package com.shippingflow.infrastructure.db.item.entity;
 
 import com.shippingflow.core.domain.aggregate.item.dto.*;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
-import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.entity.StockEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -29,18 +26,18 @@ class ItemEntityTest {
         assertThat(stockEntity.getItem()).isEqualTo(itemEntity);
     }
 
-    @DisplayName("ItemAggregateDto로 부터 StockEntity가 없는 새로운 ItemEntity 객체를 생성한다.")
+    @DisplayName("ItemSaveDto로 부터 StockEntity가 없는 새로운 ItemEntity 객체를 생성한다.")
     @Test
-    void createItemEntityWithoutStockEntityFrom_itemAggregateDto() {
+    void createItemEntityWithoutStockEntityFrom_itemSaveDto() {
         // given
         String name = "newItemA";
         long price = 1000L;
         String description = "this is newItemA";
         ItemDto itemDto = ItemDto.of(null, name, price, description);
-        ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, null, null);
+        ItemSaveDto itemSaveDto = ItemSaveDto.of(itemDto, null, null);
 
         // when
-        ItemEntity actual = ItemEntity.createFrom(itemAggregateDto);
+        ItemEntity actual = ItemEntity.createFrom(itemSaveDto);
 
         // then
         assertThat(actual.getId()).isNull();
@@ -50,9 +47,9 @@ class ItemEntityTest {
         assertThat(actual.getStock()).isNull();
     }
 
-    @DisplayName("ItemAggregateDto로 부터 StockEntity가 있는 새로운 ItemEntity 객체를 생성한다.")
+    @DisplayName("ItemSaveDto로 부터 StockEntity가 있는 새로운 ItemEntity 객체를 생성한다.")
     @Test
-    void createItemEntityWithStockEntityFrom_itemAggregateDto() {
+    void createItemEntityWithStockEntityFrom_itemSaveDto() {
         // given
         String name = "newItemA";
         long price = 1000L;
@@ -66,10 +63,10 @@ class ItemEntityTest {
         LocalDateTime transactionDateTime = LocalDateTime.now();
         StockTransactionDto stockTransactionDto = StockTransactionDto.of(null, quantity, transactionType, transactionDateTime);
 
-        ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, stockDto, List.of(stockTransactionDto));
+        ItemSaveDto itemSaveDto = ItemSaveDto.of(itemDto, stockDto, stockTransactionDto);
 
         // when
-        ItemEntity actual = ItemEntity.createFrom(itemAggregateDto);
+        ItemEntity actual = ItemEntity.createFrom(itemSaveDto);
 
         // then
         assertThat(actual.getId()).isNull();
@@ -85,9 +82,9 @@ class ItemEntityTest {
                 );
     }
 
-    @DisplayName("ItemAggregateDto로 부터 재고 입출고를 위한 ItemEntity 객체를 생성한다.")
+    @DisplayName("ItemSaveDto로 부터 재고 입출고를 위한 ItemEntity 객체를 생성한다.")
     @Test
-    void buildItemEntityWithStockAndNewTransactionEntityFrom_itemAggregateDto() {
+    void buildItemEntityWithStockAndNewTransactionEntityFrom_itemSaveDto() {
         // given
         String name = "itemA";
         long price = 1000L;
@@ -102,10 +99,10 @@ class ItemEntityTest {
         LocalDateTime transactionDateTime = LocalDateTime.now();
         StockTransactionDto stockTransactionDto = StockTransactionDto.of(null, transactionQuantity, transactionType, transactionDateTime);
 
-        ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, stockDto, List.of(stockTransactionDto));
+        ItemSaveDto itemSaveDto = ItemSaveDto.of(itemDto, stockDto, stockTransactionDto);
 
         // when
-        ItemEntity actual = ItemEntity.buildFrom(itemAggregateDto);
+        ItemEntity actual = ItemEntity.buildFrom(itemSaveDto);
 
         // then
         assertThat(actual.getId()).isEqualTo(10L);

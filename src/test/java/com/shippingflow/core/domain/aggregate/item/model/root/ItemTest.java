@@ -1,7 +1,7 @@
 package com.shippingflow.core.domain.aggregate.item.model.root;
 
-import com.shippingflow.core.domain.aggregate.item.dto.ItemAggregateDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
+import com.shippingflow.core.domain.aggregate.item.dto.ItemSaveDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
 import com.shippingflow.core.domain.aggregate.item.model.local.Stock;
@@ -9,7 +9,6 @@ import com.shippingflow.core.domain.aggregate.item.model.local.StockTransaction;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -258,9 +257,9 @@ class ItemTest {
         assertThat(actual.stock().quantity()).isEqualTo(stock.getQuantity());
     }
 
-    @DisplayName("Item을 ItemAggregateDto로 변환한다.")
+    @DisplayName("Item을 toItemSaveDto로 변환한다.")
     @Test
-    void toAggregateDto() {
+    void toItemSaveDto() {
         // given
         Item item = Item.builder()
                 .id(1L)
@@ -285,7 +284,7 @@ class ItemTest {
         item.bind(stock);
 
         // when
-        ItemAggregateDto actual = item.toItemAggregateDto();
+        ItemSaveDto actual = item.toItemSaveDto();
 
         // then
         assertThat(actual.item().id()).isEqualTo(item.getId());
@@ -293,15 +292,13 @@ class ItemTest {
         assertThat(actual.item().price()).isEqualTo(item.getPrice());
         assertThat(actual.stock().id()).isEqualTo(stock.getId());
         assertThat(actual.stock().quantity()).isEqualTo(stock.getQuantity());
-        assertThat(actual.transactions()).hasSize(1)
+        assertThat(actual.transaction())
                 .extracting("id", "transactionType", "quantity", "transactionDateTime")
                 .contains(
-                        Tuple.tuple(
-                                stockTransaction.getId(),
-                                stockTransaction.getTransactionType(),
-                                stockTransaction.getQuantity(),
-                                stockTransaction.getTransactionDateTime()
-                        )
+                        stockTransaction.getId(),
+                        stockTransaction.getTransactionType(),
+                        stockTransaction.getQuantity(),
+                        stockTransaction.getTransactionDateTime()
                 );
     }
 

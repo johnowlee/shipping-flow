@@ -46,10 +46,10 @@ class ItemWriterRepositoryAdapterTest {
         LocalDateTime transactionDateTime = LocalDateTime.now();
         StockTransactionDto stockTransactionDto = StockTransactionDto.of(null, quantity, transactionType, transactionDateTime);
 
-        ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, stockDto, List.of(stockTransactionDto));
+        ItemSaveDto itemSaveDto = ItemSaveDto.of(itemDto, stockDto, stockTransactionDto);
 
         // when
-        ItemWithStockDto actual = itemWriterRepositoryAdapter.saveNewItem(itemAggregateDto);
+        ItemWithStockDto actual = itemWriterRepositoryAdapter.saveNewItem(itemSaveDto);
 
         // then
         ItemDto actualItemDto = actual.item();
@@ -102,10 +102,10 @@ class ItemWriterRepositoryAdapterTest {
         LocalDateTime transactionDateTime = LocalDateTime.now();
         StockTransactionDto stockTransactionDto = StockTransactionDto.of(null, increaseQuantity, transactionType, transactionDateTime);
 
-        ItemAggregateDto itemAggregateDto = ItemAggregateDto.of(itemDto, stockDto, List.of(stockTransactionDto));
+        ItemSaveDto itemSaveDto = ItemSaveDto.of(itemDto, stockDto, stockTransactionDto);
 
         // when
-        ItemWithStockDto actual = itemWriterRepositoryAdapter.updateStock(itemAggregateDto);
+        ItemWithStockDto actual = itemWriterRepositoryAdapter.updateStock(itemSaveDto);
 
         // then
         ItemDto actualItemDto = actual.item();

@@ -218,6 +218,29 @@ class StockTest {
                 );
     }
 
+    @DisplayName("StockTransactions에서 첫번째 StockTransaction의 Dto를 변환한다.")
+    @Test
+    void getFirstTransactionDto() {
+        // given
+        Stock stock = Stock.builder().id(1L).build();
+
+        long transactionId = 1L;
+        long quantity = 1000L;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 20, 23, 30);
+        StockTransaction stockTransaction = StockTransaction.of(transactionId, quantity, transactionType, transactionDateTime);
+
+        stock.addTransaction(stockTransaction);
+
+        // when
+        StockTransactionDto actual = stock.getFirstTransactionDto();
+
+        // then
+        assertThat(actual)
+                .extracting("id", "transactionType", "quantity", "transactionDateTime")
+                .contains(transactionId, transactionType, quantity, transactionDateTime);
+    }
+
     private static Stock buildStock(long id, long quantity) {
         return Stock.builder().id(id).quantity(quantity).build();
     }

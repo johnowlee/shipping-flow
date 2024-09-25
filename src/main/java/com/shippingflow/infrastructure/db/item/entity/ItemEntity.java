@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -44,23 +43,24 @@ public class ItemEntity {
         stock.bindTo(this);
     }
 
-    public static ItemEntity createFrom(ItemAggregateDto itemAggregateDto) {
-        if (itemAggregateDto.isStockAbsent()) {
-            ItemDto itemDto = itemAggregateDto.item();
+    public static ItemEntity createFrom(ItemSaveDto itemSaveDto) {
+        if (itemSaveDto.isStockAbsent()) {
+            ItemDto itemDto = itemSaveDto.item();
             return buildFrom(itemDto);
         }
-        return buildFrom(itemAggregateDto);
+        return buildFrom(itemSaveDto);
     }
 
-    public static ItemEntity buildFrom(ItemAggregateDto itemAggregateDto) {
-        ItemDto itemDto = itemAggregateDto.item();
+    public static ItemEntity buildFrom(ItemSaveDto itemSaveDto) {
+        ItemDto itemDto = itemSaveDto.item();
         ItemEntity itemEntity = buildFrom(itemDto);
 
-        StockDto stockDto = itemAggregateDto.stock();
+        StockDto stockDto = itemSaveDto.stock();
         StockEntity stockEntity = StockEntity.buildFrom(stockDto);
 
-        List<StockTransactionDto> transactions = itemAggregateDto.transactions();
-        stockEntity.addTransactionsFrom(transactions);
+        StockTransactionDto transactionDto = itemSaveDto.transaction();
+        StockTransactionEntity stockTransactionEntity = StockTransactionEntity.createFrom(transactionDto);
+        stockEntity.addTransaction(stockTransactionEntity);
 
         itemEntity.bind(stockEntity);
         return itemEntity;
