@@ -10,7 +10,7 @@ import java.util.Map;
 @Component
 public class UpdateStockUseCaseFactory {
 
-    private final Map<StockTransactionType, UpdateStockUseCase> strategies = new HashMap<>();;
+    private final Map<StockTransactionType, UpdateStockUseCase> strategies = new HashMap<>();
 
     public UpdateStockUseCaseFactory(List<UpdateStockUseCase> useCases) {
         useCases.forEach(useCase -> {
