@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -79,14 +78,6 @@ public class Item {
         return item;
     }
 
-    public static Item from(ItemAggregateDto dto) {
-        Stock stock = Stock.from(dto.stock());
-        stock.addTransactionsFrom(dto.transactions());
-        Item item = from(dto.item());
-        item.bind(stock);
-        return item;
-    }
-
     public ItemDto toDto() {
         return ItemDto.of(this.id, this.name, this.price, this.description);
     }
@@ -97,11 +88,11 @@ public class Item {
         return ItemWithStockDto.of(itemDto, stockDto);
     }
 
-    public ItemAggregateDto toItemAggregateDto() {
+    public ItemSaveDto toItemSaveDto() {
         ItemDto itemDto = this.toDto();
         StockDto stockDto = isStockPresent() ? this.stock.toDto() : null;
-        List<StockTransactionDto> stockTransactionDto = isStockPresent() ? this.stock.transactionsToDtoList() : null;
-        return ItemAggregateDto.of(itemDto, stockDto, stockTransactionDto);
+        StockTransactionDto stockTransactionDto = isStockPresent() ? this.stock.getFirstTransactionDto() : null;
+        return ItemSaveDto.of(itemDto, stockDto, stockTransactionDto);
     }
 
     @Override

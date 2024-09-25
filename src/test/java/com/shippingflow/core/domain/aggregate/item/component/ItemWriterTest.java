@@ -1,6 +1,6 @@
 package com.shippingflow.core.domain.aggregate.item.component;
 
-import com.shippingflow.core.domain.aggregate.item.dto.ItemAggregateDto;
+import com.shippingflow.core.domain.aggregate.item.dto.ItemSaveDto;
 import com.shippingflow.core.domain.aggregate.item.model.local.Stock;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransaction;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
@@ -32,13 +32,9 @@ class ItemWriterTest {
     @Test
     void saveNewItem() {
         // given
-        Item item = Item.builder()
-                .id(1L)
-                .name("itemA")
-                .price(1000L)
-                .build();
+        Item item = buildItemForTest(1L, "itemA", 1000L);
 
-        given(itemWriterRepository.saveNewItem(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
+        given(itemWriterRepository.saveNewItem(any(ItemSaveDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
         Item actual = itemWriter.saveNewItem(item);
@@ -53,19 +49,13 @@ class ItemWriterTest {
     @Test
     void saveWithStockAndIncreaseTransaction() {
         // given
-        Item item = Item.builder()
-                .id(1L)
-                .name("itemA")
-                .price(1000L)
-                .build();
-
-        Stock stock = Stock.builder()
-                .id(1L)
-                .quantity(5000L)
-                .build();
+        Item item = buildItemForTest(1L, "itemA", 1000L);
+        Stock stock = buildStockForTest(1L, 5000L);
+        StockTransaction stockTransaction = buildStockTransactionForTest(1L, 500L, StockTransactionType.INCREASE, LocalDateTime.now());
+        stock.addTransaction(stockTransaction);
         item.bind(stock);
 
-        given(itemWriterRepository.saveNewItem(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
+        given(itemWriterRepository.saveNewItem(any(ItemSaveDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
         Item actual = itemWriter.saveNewItem(item);
@@ -82,26 +72,13 @@ class ItemWriterTest {
     @Test
     void updateStock() {
         // given
-        Item item = Item.builder()
-                .id(1L)
-                .name("itemA")
-                .price(1000L)
-                .build();
-        Stock stock = Stock.builder()
-                .id(1L)
-                .quantity(1000L)
-                .build();
-
-        StockTransaction stockTransaction = StockTransaction.builder()
-                .id(1L)
-                .quantity(500L)
-                .transactionType(StockTransactionType.INCREASE)
-                .transactionDateTime(LocalDateTime.now())
-                .build();
+        Item item = buildItemForTest(1L, "itemA", 1000L);
+        Stock stock = buildStockForTest(1L, 1000L);
+        StockTransaction stockTransaction = buildStockTransactionForTest(1L, 500L, StockTransactionType.INCREASE, LocalDateTime.now());
         stock.addTransaction(stockTransaction);
         item.bind(stock);
 
-        given(itemWriterRepository.updateStock(any(ItemAggregateDto.class))).willReturn(item.toItemWithStockDto());
+        given(itemWriterRepository.updateStock(any(ItemSaveDto.class))).willReturn(item.toItemWithStockDto());
 
         // when
         Item actual = itemWriter.updateStock(item);
@@ -112,5 +89,29 @@ class ItemWriterTest {
         assertThat(actual.getPrice()).isEqualTo(1000L);
         assertThat(actual.getStock().getId()).isEqualTo(1L);
         assertThat(actual.getStock().getQuantity()).isEqualTo(1000L);
+    }
+
+    private static Item buildItemForTest(long id, String name, long price) {
+        return Item.builder()
+                .id(id)
+                .name(name)
+                .price(price)
+                .build();
+    }
+
+    private static Stock buildStockForTest(long id, long quantity) {
+        return Stock.builder()
+                .id(id)
+                .quantity(quantity)
+                .build();
+    }
+
+    private static StockTransaction buildStockTransactionForTest(long id, long quantity, StockTransactionType stockTransactionType, LocalDateTime now) {
+        return StockTransaction.builder()
+                .id(id)
+                .quantity(quantity)
+                .transactionType(stockTransactionType)
+                .transactionDateTime(now)
+                .build();
     }
 }

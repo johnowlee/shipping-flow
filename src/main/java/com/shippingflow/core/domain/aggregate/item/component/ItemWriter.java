@@ -13,12 +13,12 @@ public class ItemWriter {
     private final ItemWriterRepository itemWriterRepository;
 
     public Item saveNewItem(Item item) {
-        ItemWithStockDto itemWithStockDto = itemWriterRepository.saveNewItem(item.toItemAggregateDto());
+        ItemWithStockDto itemWithStockDto = itemWriterRepository.saveNewItem(item.toItemSaveDto());
         return Item.from(itemWithStockDto);
     }
 
     public Item updateStock(Item item) {
-        ItemWithStockDto itemWithStockDto = itemWriterRepository.updateStock(item.toItemAggregateDto());
+        ItemWithStockDto itemWithStockDto = itemWriterRepository.updateStock(item.toItemSaveDto());
         return Item.from(itemWithStockDto);
     }
 }

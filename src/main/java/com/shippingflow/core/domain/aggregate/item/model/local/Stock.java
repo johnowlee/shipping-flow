@@ -78,6 +78,10 @@ public class Stock {
                 .toList();
     }
 
+    public StockTransactionDto getFirstTransactionDto() {
+        return this.transactionsToDtoList().get(0);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

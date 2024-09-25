@@ -50,6 +50,7 @@ public class StockEntity {
         this.item = item;
     }
 
+    // TODO: 2024-09-25 불필요 삭제
     public void addTransactionsFrom(List<StockTransactionDto> stockTransactionDtoList) {
         stockTransactionDtoList.stream()
                 .map(StockTransactionEntity::createFrom)
