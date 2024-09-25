@@ -1,23 +1,28 @@
-package com.shippingflow.infrastructure.db.item.adapter;
+package com.shippingflow.infrastructure.db.item.service;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemAggregateDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
+import com.shippingflow.core.domain.aggregate.item.repository.ItemWriterRepository;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.port.ItemWriterPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-// TODO: port, adapter 분리?
 @RequiredArgsConstructor
-public class ItemWriterJpaRepository {
+@Service
+public class ItemWriterRepositoryAdapter implements ItemWriterRepository {
 
-    private final ItemJpaRepository itemJpaRepository;
+    private final ItemWriterPort itemWriterPort;
 
+    @Override
     public ItemWithStockDto saveNewItem(ItemAggregateDto itemAggregateDto) {
         ItemEntity itemEntity = ItemEntity.createFrom(itemAggregateDto);
-        return itemJpaRepository.save(itemEntity).toItemWithStockDto();
+        return itemWriterPort.save(itemEntity).toItemWithStockDto();
     }
 
+    @Override
     public ItemWithStockDto updateStock(ItemAggregateDto itemAggregateDto) {
         ItemEntity itemEntity = ItemEntity.buildFrom(itemAggregateDto);
-        return itemJpaRepository.save(itemEntity).toItemWithStockDto();
+        return itemWriterPort.save(itemEntity).toItemWithStockDto();
     }
 }

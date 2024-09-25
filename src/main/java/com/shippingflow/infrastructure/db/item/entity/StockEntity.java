@@ -56,9 +56,13 @@ public class StockEntity {
                 .forEach(this::addTransaction);
     }
 
-    private void addTransaction(StockTransactionEntity stockTransaction) {
+    public void addTransaction(StockTransactionEntity stockTransaction) {
         this.transactions.add(stockTransaction);
         stockTransaction.bindTo(this);
+    }
+
+    public void addTransactions(List<StockTransactionEntity> stockTransactions) {
+        stockTransactions.forEach(this::addTransaction);
     }
 
     private static StockEntity of(Long id, Long quantity) {
