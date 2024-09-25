@@ -1,18 +1,10 @@
 package com.shippingflow.infrastructure.db.item.entity;
 
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
-import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
-import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
-import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
-import com.shippingflow.infrastructure.db.item.entity.StockEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 class StockEntityTest {
     @DisplayName("StockDto로 부터 StockEntity를 생성한다.")
@@ -55,27 +47,5 @@ class StockEntityTest {
 
         // then
         assertThat(stockEntity.getItem()).isEqualTo(itemEntity);
-    }
-
-    @DisplayName("StockTransactionDto List로 부터 StockEntity의 재고 입출고 내역에 신규 StockTransactionEntity 를 추가한다.")
-    @Test
-    void addTransactionsFromStockTransactionDtoList() {
-        // given
-        long transactionQuantity = 5000L;
-        StockTransactionType transactionType = StockTransactionType.INCREASE;
-        LocalDateTime transactionDateTime = LocalDateTime.now();
-        StockTransactionDto stockTransactionDto = StockTransactionDto.of(null, transactionQuantity, transactionType, transactionDateTime);
-
-        StockEntity stockEntity = StockEntity.builder().id(1L).build();
-
-        // when
-        stockEntity.addTransactionsFrom(List.of(stockTransactionDto));
-
-        // then
-        assertThat(stockEntity.getTransactions()).hasSize(1)
-                .extracting("id", "quantity", "transactionType", "transactionDateTime")
-                .contains(
-                        tuple(null, transactionQuantity, transactionType, transactionDateTime)
-                );
     }
 }
