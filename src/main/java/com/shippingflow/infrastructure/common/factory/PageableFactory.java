@@ -14,7 +14,6 @@ public class PageableFactory {
         return isSortable(sortablePaginationRequest) ? createPageRequestWithSort(sortablePaginationRequest) : createPageRequest(sortablePaginationRequest);
     }
 
-    // TODO: 2024-09-26 test
     public Pageable createPageable(BasicPaginationRequest basicPaginationRequest) {
         return PageRequest.of(basicPaginationRequest.page(), basicPaginationRequest.size());
     }

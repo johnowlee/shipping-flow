@@ -24,10 +24,10 @@ import java.util.Optional;
 public class ItemReaderRepositoryAdapter implements ItemReaderRepository {
 
     private final ItemReaderPort itemReaderPort;
+
     private final PageableFactory pageableFactory;
     private final ItemEntityPageMapper itemEntityPageMapper;
     private final StockTransactionEntityPageMapper stockTransactionEntityPageMapper;
-
 
     @Override
     public boolean existsByName(String name) {
