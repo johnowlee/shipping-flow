@@ -8,7 +8,9 @@ import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.infrastructure.common.factory.PageableFactory;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockTransactionEntity;
 import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
+import com.shippingflow.infrastructure.db.item.mapper.StockTransactionEntityPageMapper;
 import com.shippingflow.infrastructure.db.item.port.ItemReaderPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,9 +24,10 @@ import java.util.Optional;
 public class ItemReaderRepositoryAdapter implements ItemReaderRepository {
 
     private final ItemReaderPort itemReaderPort;
+
     private final PageableFactory pageableFactory;
     private final ItemEntityPageMapper itemEntityPageMapper;
-
+    private final StockTransactionEntityPageMapper stockTransactionEntityPageMapper;
 
     @Override
     public boolean existsByName(String name) {
@@ -46,6 +49,8 @@ public class ItemReaderRepositoryAdapter implements ItemReaderRepository {
 
     @Override
     public PageResponse<StockTransactionDto> findStockTransactionsByItemId(long itemId, BasicPaginationRequest paginationRequest) {
-        return null;
+        Pageable pageable = pageableFactory.createPageable(paginationRequest);
+        Page<StockTransactionEntity> stockTransactionEntityPage = itemReaderPort.findAllStockTransactionsByItemId(itemId, pageable);
+        return stockTransactionEntityPageMapper.toStockTransactionDtoPageResponse(stockTransactionEntityPage);
     }
 }

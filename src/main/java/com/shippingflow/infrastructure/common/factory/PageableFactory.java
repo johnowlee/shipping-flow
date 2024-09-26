@@ -1,5 +1,6 @@
 package com.shippingflow.infrastructure.common.factory;
 
+import com.shippingflow.core.domain.common.pagination.BasicPaginationRequest;
 import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,10 @@ public class PageableFactory {
 
     public Pageable createPageable(SortablePaginationRequest sortablePaginationRequest) {
         return isSortable(sortablePaginationRequest) ? createPageRequestWithSort(sortablePaginationRequest) : createPageRequest(sortablePaginationRequest);
+    }
+
+    public Pageable createPageable(BasicPaginationRequest basicPaginationRequest) {
+        return PageRequest.of(basicPaginationRequest.page(), basicPaginationRequest.size());
     }
 
     private boolean isSortable(SortablePaginationRequest sortablePaginationRequest) {
