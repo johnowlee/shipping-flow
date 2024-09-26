@@ -1,6 +1,7 @@
 package com.shippingflow.infrastructure.db.item.adapter;
 
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
+import com.shippingflow.infrastructure.db.item.adapter.repository.ItemJpaRepository;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import com.shippingflow.infrastructure.db.item.entity.StockEntity;
 import com.shippingflow.infrastructure.db.item.entity.StockTransactionEntity;

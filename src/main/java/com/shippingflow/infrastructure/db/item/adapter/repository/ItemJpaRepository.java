@@ -1,4 +1,4 @@
-package com.shippingflow.infrastructure.db.item.adapter;
+package com.shippingflow.infrastructure.db.item.adapter.repository;
 
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

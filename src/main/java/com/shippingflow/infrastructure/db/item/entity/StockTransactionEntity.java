@@ -49,6 +49,10 @@ public class StockTransactionEntity {
         this.stock = stockEntity;
     }
 
+    public StockTransactionDto toStockTransactionDto() {
+        return StockTransactionDto.of(this.id, this.quantity, this.transactionType, this.transactionDateTime);
+    }
+
     private static StockTransactionEntity create(long quantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
         return of(null, quantity, transactionType, transactionDateTime);
     }

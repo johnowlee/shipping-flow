@@ -1,7 +1,11 @@
 package com.shippingflow.infrastructure.db.item.adapter;
 
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
+import com.shippingflow.infrastructure.db.item.adapter.repository.ItemJpaRepository;
+import com.shippingflow.infrastructure.db.item.adapter.repository.StockTransactionJpaRepository;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import com.shippingflow.infrastructure.db.item.entity.StockEntity;
+import com.shippingflow.infrastructure.db.item.entity.StockTransactionEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +30,9 @@ class ItemReaderAdapterTest {
 
     @Autowired
     ItemJpaRepository itemJpaRepository;
+
+    @Autowired
+    StockTransactionJpaRepository stockTransactionJpaRepository;
 
     @Autowired
     ItemReaderAdapter itemReaderAdapter;
@@ -157,6 +165,44 @@ class ItemReaderAdapterTest {
                 );
     }
 
+    @DisplayName("상품 ID로 페이징 처리 된 StockTransactionEntity 목록과 Page객체를 조회한다.")
+    @Test
+    void findAllStockTransactionsByItemId() {
+        // given
+        String name = "ItemA";
+        long price = 1000L;
+        String description = "This is ItemA";
+        ItemEntity itemEntity = createNewItemForTest(name, price, description);
+        long quantity = 5000L;
+        StockEntity stockEntity = createNewStockForTest(quantity);
+        long transactionQuantity = 5000L;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        LocalDateTime transactionDateTime = LocalDateTime.now();
+        StockTransactionEntity stockTransaction = createNewStockTransactionForTest(transactionQuantity, transactionType, transactionDateTime);
+
+        stockEntity.addTransaction(stockTransaction);
+        itemEntity.bind(stockEntity);
+
+        ItemEntity savedItemEntity = itemJpaRepository.save(itemEntity);
+
+        Pageable pageable = PageRequest.of(0, 5);
+
+        // when
+        Page<StockTransactionEntity> actual = itemReaderAdapter.findAllStockTransactionsByItemId(savedItemEntity.getId(), pageable);
+
+        // then
+        assertThat(actual.getNumber()).isEqualTo(0);
+        assertThat(actual.getSize()).isEqualTo(5);
+        assertThat(actual.getTotalPages()).isEqualTo(1);
+        assertThat(actual.getTotalElements()).isEqualTo(1);
+
+        List<StockTransactionEntity> stockTransactionEntities = actual.getContent();
+        assertThat(stockTransactionEntities)
+                .hasSize(1)
+                .extracting("quantity", "transactionType", "transactionDateTime")
+                .containsExactly(tuple(transactionQuantity, transactionType, transactionDateTime));
+    }
+
     private static ItemEntity createNewItemForTest(String name, long price, String description) {
         return ItemEntity.builder()
                 .name(name)
@@ -168,6 +214,14 @@ class ItemReaderAdapterTest {
     private static StockEntity createNewStockForTest(long quantity) {
         return StockEntity.builder()
                 .quantity(quantity)
+                .build();
+    }
+
+    private static StockTransactionEntity createNewStockTransactionForTest(long transactionQuantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        return StockTransactionEntity.builder()
+                .quantity(transactionQuantity)
+                .transactionType(transactionType)
+                .transactionDateTime(transactionDateTime)
                 .build();
     }
 }

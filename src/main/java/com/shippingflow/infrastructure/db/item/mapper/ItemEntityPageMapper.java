@@ -13,7 +13,7 @@ public class ItemEntityPageMapper {
 
     public PageResponse<ItemWithStockDto> toItemWithStockDtoPageResponse(Page<ItemEntity> itemEntityPage) {
         return new PageResponse<>(
-                toItemWithStockDtoList(itemEntityPage),
+                toItemWithStockDtoList(itemEntityPage.getContent()),
                 itemEntityPage.getNumber(),
                 itemEntityPage.getSize(),
                 itemEntityPage.getTotalElements(),
@@ -21,8 +21,8 @@ public class ItemEntityPageMapper {
         );
     }
 
-    private static List<ItemWithStockDto> toItemWithStockDtoList(Page<ItemEntity> itemEntityPage) {
-        return itemEntityPage.getContent().stream()
+    private static List<ItemWithStockDto> toItemWithStockDtoList(List<ItemEntity> itemEntities) {
+        return itemEntities.stream()
                 .map(ItemEntity::toItemWithStockDto)
                 .toList();
     }

@@ -3,13 +3,17 @@ package com.shippingflow.infrastructure.db.item.service;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
+import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
+import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
+import com.shippingflow.core.domain.common.pagination.BasicPaginationRequest;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
-import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
+import com.shippingflow.infrastructure.common.factory.PageableFactory;
+import com.shippingflow.infrastructure.db.item.adapter.repository.ItemJpaRepository;
 import com.shippingflow.infrastructure.db.item.entity.ItemEntity;
 import com.shippingflow.infrastructure.db.item.entity.StockEntity;
-import com.shippingflow.infrastructure.db.item.adapter.ItemJpaRepository;
-import com.shippingflow.infrastructure.common.factory.PageableFactory;
+import com.shippingflow.infrastructure.db.item.entity.StockTransactionEntity;
+import com.shippingflow.infrastructure.db.item.mapper.ItemEntityPageMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +21,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @ActiveProfiles("local")
 @Transactional
@@ -177,11 +183,54 @@ class ItemReaderRepositoryAdapterTest {
                 .containsExactly("ItemA", 100L, "ItemB", 200L);
     }
 
+    @DisplayName("상품 ID와 페이징 요청에 따라 상품 재고 내역을 반환한다.")
+    @Test
+    void findStockTransactionsByItemId() {
+        // given
+        ItemEntity item = createNewItemForTest("ItemA", 1000L, "This is ItemA");
+        StockEntity stock = StockEntity.builder().quantity(100L).build();
+
+        StockTransactionEntity tx1 = createNewStockTransactionForTest(1000L, StockTransactionType.INCREASE, LocalDateTime.now());
+        StockTransactionEntity tx2 = createNewStockTransactionForTest(500L, StockTransactionType.DECREASE, LocalDateTime.now());
+
+        stock.addTransactions(List.of(tx1, tx2));
+        item.bind(stock);
+        ItemEntity savedItemEntity = itemJpaRepository.save(item);
+
+        BasicPaginationRequest basicPaginationRequest = BasicPaginationRequest.of(1, 2);
+
+        // when
+        PageResponse<StockTransactionDto> actual = itemReaderRepositoryAdapter.findStockTransactionsByItemId(savedItemEntity.getId(), basicPaginationRequest);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual.pageNumber()).isEqualTo(0);
+        assertThat(actual.pageSize()).isEqualTo(2);
+        assertThat(actual.totalElements()).isEqualTo(2);
+        assertThat(actual.totalPages()).isEqualTo(1);
+
+        assertThat(actual.content())
+                .hasSize(2)
+                .extracting("quantity", "transactionType", "transactionDateTime")
+                .contains(
+                        tuple(tx1.getQuantity(), tx1.getTransactionType(), tx1.getTransactionDateTime()),
+                        tuple(tx2.getQuantity(), tx2.getTransactionType(), tx2.getTransactionDateTime())
+                );
+    }
+
     private static ItemEntity createNewItemForTest(String name, long price, String description) {
         return ItemEntity.builder()
                 .name(name)
                 .price(price)
                 .description(description)
+                .build();
+    }
+
+    private static StockTransactionEntity createNewStockTransactionForTest(long transactionQuantity, StockTransactionType transactionType, LocalDateTime transactionDateTime) {
+        return StockTransactionEntity.builder()
+                .quantity(transactionQuantity)
+                .transactionType(transactionType)
+                .transactionDateTime(transactionDateTime)
                 .build();
     }
 }
