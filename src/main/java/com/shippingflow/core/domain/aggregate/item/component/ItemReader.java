@@ -32,7 +32,6 @@ public class ItemReader {
         return itemReaderRepository.findAllItemsWithStock(sortablePaginationRequest);
     }
 
-    // TODO: 2024-09-26 test
     public PageResponse<StockTransactionDto> getStockTransactions(long itemId, BasicPaginationRequest paginationRequest) {
         return itemReaderRepository.findStockTransactionsByItemId(itemId, paginationRequest);
     }
