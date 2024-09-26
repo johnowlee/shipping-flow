@@ -69,7 +69,7 @@ class DecreaseStockUseCaseTest {
         DecreaseStockUseCase.Output output = decreaseStockUseCase.execute(input);
 
         // then
-        assertThat(output.getStock().quantity()).isEqualTo(300L - 50L);
+        assertThat(output.getItemWithStockDto().stock().quantity()).isEqualTo(300L - 50L);
 
         then(itemWriter).should(times(1)).updateStock(any(Item.class));
     }

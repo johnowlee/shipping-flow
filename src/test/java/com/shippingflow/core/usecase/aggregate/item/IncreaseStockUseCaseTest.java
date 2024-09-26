@@ -67,8 +67,8 @@ class IncreaseStockUseCaseTest {
         UpdateStockUseCase.Output output = increaseStockUseCase.execute(input);
 
         // then
-        assertThat(output.getItem()).isNotNull();
-        assertThat(output.getStock().quantity()).isEqualTo(50L);
+        assertThat(output.getItemWithStockDto().item()).isNotNull();
+        assertThat(output.getItemWithStockDto().stock().quantity()).isEqualTo(50L);
 
         then(itemReader).should(times(1)).getItemWithStockById(itemId);
         then(itemWriter).should(times(1)).updateStock(item);
