@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.item.controller.response;
+package com.shippingflow.presenter.api.item.response;
 
 import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;

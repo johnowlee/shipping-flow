@@ -1,7 +1,7 @@
-package com.shippingflow.presenter.api.item.controller.request;
+package com.shippingflow.presenter.api.item.request;
 
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
-import com.shippingflow.presenter.api.item.controller.request.validator.ValidStockTransactionType;
+import com.shippingflow.presenter.api.item.request.validator.ValidStockTransactionType;
 import jakarta.validation.constraints.Positive;
 
 public record UpdateStockRequest(

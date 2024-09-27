@@ -1,14 +1,14 @@
-package com.shippingflow.presenter.api.item.controller;
+package com.shippingflow.presenter.api.item;
 
 import com.shippingflow.core.domain.common.pagination.BasicPaginationRequest;
 import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.core.usecase.aggregate.item.*;
-import com.shippingflow.presenter.api.common.response.RestApiResponse;
-import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
-import com.shippingflow.presenter.api.item.controller.request.UpdateStockRequest;
-import com.shippingflow.presenter.api.item.controller.response.ItemResponse;
-import com.shippingflow.presenter.api.item.controller.response.ItemsResponse;
-import com.shippingflow.presenter.api.item.controller.response.StockTransactionsResponse;
+import com.shippingflow.presenter.common.response.RestApiResponse;
+import com.shippingflow.presenter.api.item.request.CreateItemRequest;
+import com.shippingflow.presenter.api.item.request.UpdateStockRequest;
+import com.shippingflow.presenter.api.item.response.ItemResponse;
+import com.shippingflow.presenter.api.item.response.ItemsResponse;
+import com.shippingflow.presenter.api.item.response.StockTransactionsResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;

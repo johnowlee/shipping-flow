@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.common.response;
+package com.shippingflow.presenter.common.response;
 
 import org.springframework.http.HttpStatus;
 

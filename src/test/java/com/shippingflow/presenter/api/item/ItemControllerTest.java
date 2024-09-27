@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.item.controller;
+package com.shippingflow.presenter.api.item;
 
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
@@ -9,8 +9,8 @@ import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.aggregate.item.*;
 import com.shippingflow.presenter.WebMvcTestSupport;
-import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
-import com.shippingflow.presenter.api.item.controller.request.UpdateStockRequest;
+import com.shippingflow.presenter.api.item.request.CreateItemRequest;
+import com.shippingflow.presenter.api.item.request.UpdateStockRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

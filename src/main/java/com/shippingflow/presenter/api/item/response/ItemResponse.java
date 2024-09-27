@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.item.controller.response;
+package com.shippingflow.presenter.api.item.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;

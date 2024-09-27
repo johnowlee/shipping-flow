@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.item.controller.request;
+package com.shippingflow.presenter.api.item.request;
 
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import org.junit.jupiter.api.DisplayName;

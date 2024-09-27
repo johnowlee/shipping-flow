@@ -1,7 +1,7 @@
-package com.shippingflow.presenter.api;
+package com.shippingflow.presenter.common;
 
 import com.shippingflow.core.exception.DomainException;
-import com.shippingflow.presenter.api.common.response.ExceptionResponse;
+import com.shippingflow.presenter.common.response.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
