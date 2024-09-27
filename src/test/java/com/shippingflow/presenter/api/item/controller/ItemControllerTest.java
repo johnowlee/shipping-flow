@@ -51,6 +51,9 @@ class ItemControllerTest extends WebMvcTestSupport {
     @MockBean
     GetItemsUseCase getItemsUseCase;
 
+    @MockBean
+    GetStockTransactionsUseCase getStockTransactionsUseCase;
+
     @DisplayName("상품을 등록한다.")
     @Test
     void createItem() throws Exception {
@@ -290,8 +293,8 @@ class ItemControllerTest extends WebMvcTestSupport {
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/items")
-                        .param("pageNumber", String.valueOf(pageNumber))
-                        .param("pageSize", String.valueOf(pageSize))
+                        .param("page", String.valueOf(pageNumber))
+                        .param("size", String.valueOf(pageSize))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())  // 기대하는 응답 상태 코드
