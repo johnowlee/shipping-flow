@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api;
+package com.shippingflow.presenter.common.response;
 
 import com.shippingflow.core.exception.DomainException;
 import com.shippingflow.core.exception.error.ErrorSpec;

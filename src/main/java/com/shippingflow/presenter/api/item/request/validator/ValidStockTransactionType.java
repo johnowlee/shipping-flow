@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.item.controller.request.validator;
+package com.shippingflow.presenter.api.item.request.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

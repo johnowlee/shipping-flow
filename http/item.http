@@ -14,10 +14,20 @@ POST localhost:8080/api/items/1/stock-update
 Content-Type: application/json
 
 {
-  "stockTransactionType": "INCREASE",
-  "quantity": 2000
+  "stockTransactionType": "deCREASE",
+  "quantity": 3000
 }
+
+### 상품 조회
+GET localhost:8080/api/items/1
+Content-Type: application/json
+
 
 ### 상품 목록 조회
 GET localhost:8080/api/items?page=1&size=5&sortBy=price&sortDir=desc
+Content-Type: application/json
+
+
+### 상품 재고 내역 조회
+GET localhost:8080/api/items/1/stock/transactions?page=1&size=5
 Content-Type: application/json

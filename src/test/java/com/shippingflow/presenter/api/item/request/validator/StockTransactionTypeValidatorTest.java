@@ -1,4 +1,4 @@
-package com.shippingflow.presenter.api.item.controller.request.validator;
+package com.shippingflow.presenter.api.item.request.validator;
 
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import org.junit.jupiter.api.DisplayName;
