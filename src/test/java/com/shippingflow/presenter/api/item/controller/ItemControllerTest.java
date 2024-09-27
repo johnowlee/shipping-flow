@@ -10,7 +10,7 @@ import com.shippingflow.core.exception.error.ItemError;
 import com.shippingflow.core.usecase.aggregate.item.*;
 import com.shippingflow.presenter.WebMvcTestSupport;
 import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
-import com.shippingflow.presenter.api.item.controller.request.UpdateItemStockRequest;
+import com.shippingflow.presenter.api.item.controller.request.UpdateStockRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -112,7 +112,7 @@ class ItemControllerTest extends WebMvcTestSupport {
         long itemId = 1L;
         String stockTransactionType = "INCREASE";
         long quantity = 1000L;
-        UpdateItemStockRequest updateItemStockRequest = new UpdateItemStockRequest(stockTransactionType, quantity);
+        UpdateStockRequest updateStockRequest = new UpdateStockRequest(stockTransactionType, quantity);
 
         given(updateStockUseCaseFactory.getUseCaseBy(any(StockTransactionType.class))).willReturn(increaseStockUseCase);
         UpdateStockUseCase updateStockUseCase = increaseStockUseCase;
@@ -130,7 +130,7 @@ class ItemControllerTest extends WebMvcTestSupport {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/items/{id}/stock-update", itemId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateItemStockRequest))
+                        .content(objectMapper.writeValueAsString(updateStockRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -151,7 +151,7 @@ class ItemControllerTest extends WebMvcTestSupport {
         long itemId = 1L;
         String stockTransactionType = "DECREASE";
         long quantity = 1000L;
-        UpdateItemStockRequest updateItemStockRequest = new UpdateItemStockRequest(stockTransactionType, quantity);
+        UpdateStockRequest updateStockRequest = new UpdateStockRequest(stockTransactionType, quantity);
 
         given(updateStockUseCaseFactory.getUseCaseBy(any(StockTransactionType.class))).willReturn(decreaseStockUseCase);
         UpdateStockUseCase updateStockUseCase = decreaseStockUseCase;
@@ -169,7 +169,7 @@ class ItemControllerTest extends WebMvcTestSupport {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/items/{id}/stock-update", itemId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateItemStockRequest))
+                        .content(objectMapper.writeValueAsString(updateStockRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -190,11 +190,11 @@ class ItemControllerTest extends WebMvcTestSupport {
         // given
         long itemId = 1L;
         long quantity = 1000L;
-        UpdateItemStockRequest updateItemStockRequest = new UpdateItemStockRequest(invalidTypes, quantity);
+        UpdateStockRequest updateStockRequest = new UpdateStockRequest(invalidTypes, quantity);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/items/{id}/stock-update", itemId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateItemStockRequest))
+                        .content(objectMapper.writeValueAsString(updateStockRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -210,11 +210,11 @@ class ItemControllerTest extends WebMvcTestSupport {
         // given
         long itemId = 1L;
         long quantity = 0;
-        UpdateItemStockRequest updateItemStockRequest = new UpdateItemStockRequest("INCREASE", quantity);
+        UpdateStockRequest updateStockRequest = new UpdateStockRequest("INCREASE", quantity);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/items/{id}/stock-update", itemId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateItemStockRequest))
+                        .content(objectMapper.writeValueAsString(updateStockRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())

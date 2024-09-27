@@ -4,7 +4,7 @@ import com.shippingflow.core.domain.common.pagination.SortablePaginationRequest;
 import com.shippingflow.core.usecase.aggregate.item.*;
 import com.shippingflow.presenter.api.RestApiResponse;
 import com.shippingflow.presenter.api.item.controller.request.CreateItemRequest;
-import com.shippingflow.presenter.api.item.controller.request.UpdateItemStockRequest;
+import com.shippingflow.presenter.api.item.controller.request.UpdateStockRequest;
 import com.shippingflow.presenter.api.item.controller.response.ItemResponse;
 import com.shippingflow.presenter.api.item.controller.response.ItemsResponse;
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class ItemController {
     }
     
     @PostMapping("{id}/stock-update")
-    public RestApiResponse<ItemResponse> updateItemStock(@PathVariable long id, @Valid @RequestBody UpdateItemStockRequest request) {
+    public RestApiResponse<ItemResponse> updateStock(@PathVariable long id, @Valid @RequestBody UpdateStockRequest request) {
         UpdateStockUseCase updateStockUseCase = updateStockUseCaseFactory.getUseCaseBy(request.convertStockTransactionTypeToEnum());
         UpdateStockUseCase.Input input = UpdateStockUseCase.Input.of(id, request.quantity());
         UpdateStockUseCase.Output output = updateStockUseCase.execute(input);

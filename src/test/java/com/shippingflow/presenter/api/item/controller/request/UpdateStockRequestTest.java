@@ -12,17 +12,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class UpdateItemStockRequestTest {
+class UpdateStockRequestTest {
 
     @DisplayName("transactionType 문자를 StockTransactionType Enum으로 변환한다.")
     @ParameterizedTest
     @MethodSource("getValidTypes")
     void convertStockTransactionTypeToEnum(String types) {
         // given
-        UpdateItemStockRequest updateItemStockRequest = new UpdateItemStockRequest(types, 0);
+        UpdateStockRequest updateStockRequest = new UpdateStockRequest(types, 0);
 
         // when
-        StockTransactionType actual = updateItemStockRequest.convertStockTransactionTypeToEnum();
+        StockTransactionType actual = updateStockRequest.convertStockTransactionTypeToEnum();
 
         // then
         assertThat(actual).isNotNull();
@@ -33,10 +33,10 @@ class UpdateItemStockRequestTest {
     void convertStockTransactionTypeToEnum_shouldThrowExceptionWhenTypeIsNotValid() {
         // given
         String invalidType = "INVALID_TYPE";
-        UpdateItemStockRequest updateItemStockRequest = new UpdateItemStockRequest(invalidType, 0);
+        UpdateStockRequest updateStockRequest = new UpdateStockRequest(invalidType, 0);
 
         // when & then
-        assertThatThrownBy(() -> updateItemStockRequest.convertStockTransactionTypeToEnum())
+        assertThatThrownBy(() -> updateStockRequest.convertStockTransactionTypeToEnum())
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
