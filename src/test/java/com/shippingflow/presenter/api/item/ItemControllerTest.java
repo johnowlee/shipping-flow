@@ -307,8 +307,8 @@ class ItemControllerTest extends WebMvcTestSupport {
                 .andExpect(jsonPath("$.data.items[0].price").value(price))
                 .andExpect(jsonPath("$.data.items[0].quantity").value(quantity))
                 .andExpect(jsonPath("$.data.items[0].description").value(description))
-                .andExpect(jsonPath("$.data.page.pageNumber").value(pageNumber))
-                .andExpect(jsonPath("$.data.page.pageSize").value(pageSize))
+                .andExpect(jsonPath("$.data.page.number").value(pageNumber))
+                .andExpect(jsonPath("$.data.page.size").value(pageSize))
                 .andExpect(jsonPath("$.data.page.totalElements").value(1))
                 .andExpect(jsonPath("$.data.page.totalPages").value(1));
     }
