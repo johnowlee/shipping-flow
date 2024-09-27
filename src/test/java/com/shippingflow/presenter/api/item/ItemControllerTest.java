@@ -3,6 +3,7 @@ package com.shippingflow.presenter.api.item;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemDto;
 import com.shippingflow.core.domain.aggregate.item.dto.ItemWithStockDto;
 import com.shippingflow.core.domain.aggregate.item.dto.StockDto;
+import com.shippingflow.core.domain.aggregate.item.dto.StockTransactionDto;
 import com.shippingflow.core.domain.aggregate.item.model.local.StockTransactionType;
 import com.shippingflow.core.domain.common.pagination.PageResponse;
 import com.shippingflow.core.exception.DomainException;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -307,6 +309,43 @@ class ItemControllerTest extends WebMvcTestSupport {
                 .andExpect(jsonPath("$.data.items[0].price").value(price))
                 .andExpect(jsonPath("$.data.items[0].quantity").value(quantity))
                 .andExpect(jsonPath("$.data.items[0].description").value(description))
+                .andExpect(jsonPath("$.data.page.number").value(pageNumber))
+                .andExpect(jsonPath("$.data.page.size").value(pageSize))
+                .andExpect(jsonPath("$.data.page.totalElements").value(1))
+                .andExpect(jsonPath("$.data.page.totalPages").value(1));
+    }
+
+    @DisplayName("상품 입출고 내역과 페이지정보를 조회한다.")
+    @Test
+    void getStockTransactions() throws Exception {
+        // given
+        int pageNumber = 1;
+        int pageSize = 10;
+
+        long transactionId = 10L;
+        int transactionQuantity = 1000;
+        StockTransactionType transactionType = StockTransactionType.INCREASE;
+        LocalDateTime transactionDateTime = LocalDateTime.of(2024, 9, 27, 19, 13);
+        StockTransactionDto stockTransactionDto = StockTransactionDto.of(transactionId, transactionQuantity, transactionType, transactionDateTime);
+
+        PageResponse<StockTransactionDto> pageResponse = new PageResponse<>(List.of(stockTransactionDto), pageNumber, pageSize, 1, 1);
+        GetStockTransactionsUseCase.Output output = GetStockTransactionsUseCase.Output.of(pageResponse);
+        given(getStockTransactionsUseCase.execute(any(GetStockTransactionsUseCase.Input.class))).willReturn(output);
+
+        // when & then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/items/{id}/stock/transactions", 1L)
+                        .param("page", String.valueOf(pageNumber))
+                        .param("size", String.valueOf(pageSize))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data.stockTransactions").isArray())
+                .andExpect(jsonPath("$.data.stockTransactions[0].id").value(transactionId))
+                .andExpect(jsonPath("$.data.stockTransactions[0].quantity").value(transactionQuantity))
+                .andExpect(jsonPath("$.data.stockTransactions[0].transactionType").value(transactionType.name()))
                 .andExpect(jsonPath("$.data.page.number").value(pageNumber))
                 .andExpect(jsonPath("$.data.page.size").value(pageSize))
                 .andExpect(jsonPath("$.data.page.totalElements").value(1))

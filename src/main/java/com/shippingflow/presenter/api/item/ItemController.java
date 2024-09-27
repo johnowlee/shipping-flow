@@ -58,7 +58,6 @@ public class ItemController {
         return RestApiResponse.ok(ItemsResponse.from(output.getPageResponse()));
     }
 
-    // TODO: test
     @GetMapping("{id}/stock/transactions")
     public RestApiResponse<StockTransactionsResponse> getStockTransactions(
             @PathVariable long id,
